@@ -52,13 +52,13 @@ main[data-p="side"] #stage,main[data-p="side"] #right,main[data-p="stage"] #side
 #mnav{display:flex;border-top:1px solid var(--line);background:var(--pan)}#mnav button{flex:1;border:0;background:none;padding:12px 0}#mnav .on{color:var(--acc);font-weight:600;background:var(--accbg)}
 .meta,.meta2,.page,.tb{padding-left:14px;padding-right:14px}.title{font-size:21px}}
 </style></head><body><div id="app">
-<header><span class="brand">Marginalia</span>
+<header><span class="brand">Marginalia</span><button class="btn" id="nvb" data-c="nvOpen()" aria-label="Mis novelas"></button>
 <button class="tab" data-v="write">Escribir</button><button class="tab" data-v="board">Tablero</button><button class="tab" data-v="time">Cronología</button><button class="tab" data-v="mat">Matriz</button><button class="tab" data-v="stat">Estadísticas</button><button class="tab" data-v="graph">Grafo</button><button class="tab" data-v="book">Manuscrito</button><button class="tab" data-v="ai">Asistente</button>
 <span class="sp"></span><span class="small" id="odh"></span><button class="btn" data-c="pal()">Ir a…</button><button class="btn" id="th" aria-label="Cambiar tema">Tema</button><button class="btn" id="sync">Copia y sincronizar</button></header>
 <main id="mn"><aside id="side"></aside><section id="stage"></section><aside id="right"></aside></main>
 <nav id="mnav"><button data-p="side">Notas</button><button data-p="stage">Texto</button><button data-p="right">Panel</button></nav>
 <button class="btn" id="fx" data-c="foco()">Salir del modo foco</button></div>
-<dialog id="pal"><input id="pi" placeholder="Ir a una nota o vista…" style="width:100%" aria-label="Ir a"><div id="pl"></div><p class="small">Pulsa Enter para abrir el primer resultado. Atajo: Ctrl+K.</p></dialog><dialog id="dlg"><h3 style="margin-top:0;font-family:var(--ser)">Copia y sincronizar</h3>
+<dialog id="nvd"><h3 style="margin-top:0;font-family:var(--ser)">Mis novelas</h3><div id="nvl"></div><div class="row" style="margin-top:10px"><input id="nvn" placeholder="Nombre de la nueva novela" style="flex:1" aria-label="Nombre de la nueva novela"><button class="btn" data-c="nvNew()">Crear</button></div><h4>Esta novela</h4><div class="row"><input id="nvr" style="flex:1" aria-label="Nombre de esta novela"><button class="btn" data-c="nvRen()">Renombrar</button></div><div class="row"><button class="btn" id="nvdb" data-c="nvDel()">Borrar esta novela de este equipo</button></div><p style="display:flex;justify-content:flex-end;margin-bottom:0"><button class="btn" id="nvx">Cerrar</button></p></dialog><dialog id="pal"><input id="pi" placeholder="Ir a una nota o vista…" style="width:100%" aria-label="Ir a"><div id="pl"></div><p class="small">Pulsa Enter para abrir el primer resultado. Atajo: Ctrl+K.</p></dialog><dialog id="dlg"><h3 style="margin-top:0;font-family:var(--ser)">Copia y sincronizar</h3>
 <p class="small">Copia este texto y guárdalo como archivo .json en tu OneDrive. En otro equipo, ábrelo, pégalo aquí y pulsa Importar.</p>
 <div id="odu"></div><h4>Copia manual</h4><textarea id="dt"></textarea><p style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:0"><button class="btn" id="dc">Copiar</button><button class="btn" id="di">Importar</button><button class="btn" id="dx">Cerrar</button></p></dialog>
 <script>addEventListener('error',function(e){var d=document.createElement('pre');d.style.cssText='position:fixed;z-index:99;left:0;right:0;bottom:0;margin:0;padding:8px 12px;background:#a3452f;color:#fff;font:12px monospace;white-space:pre-wrap';d.textContent='Error: '+e.message+(e.lineno?' (línea '+e.lineno+')':'');(document.body||document.documentElement).appendChild(d)})</script>
@@ -78,10 +78,12 @@ n('char','El librero','Librero de viejo. ¿Don Anselmo o Julián? Aún es ambigu
 n('char','Elena','Compañera y confidente de [[Mateo Rivas]].'),
 n('char','El otro Mateo','Tocayo, o sombra del pasado de [[Mateo Rivas]].','',0,'',{},['pasado']),
 n('note','Premisa','Mateo compra una novela de segunda mano cuyas últimas diez páginas están escritas a mano con una letra idéntica a la suya, narrando lo ocurrido ayer por la tarde.')]}}
-function norm(d){d.notes.forEach(n=>{n.tags=n.tags||[];n.f=n.f||{};n.syn=n.syn||''});d.od=d.od||{done:false,oh:null};d.pane=d.pane||'stage';d.q='';d.tag='';d.focus=false;d.trash=d.trash||[];d.hist=d.hist||{};d.dg=d.dg||500;d.fs=d.fs||17;d.fw=d.fw||720;d.ff=d.ff||'ser';d.gt='';d.bt='';d.rp='';d.gl=false;d.bk=d.bk||Date.now();d.snaps=d.snaps||[];d.notes.forEach(n=>{n.h=n.h||[];n.date=n.date||''});return d}
-function load(){try{const r=localStorage.getItem('scr1');if(r)return norm(JSON.parse(r))}catch(e){}return norm(seed())}
-let S=load(),tm;function save(){clearTimeout(tm);tm=setTimeout(()=>{try{localStorage.setItem('scr1',JSON.stringify(S))}catch(e){}},300);odSoon()}
-if(S.theme)document.documentElement.dataset.theme=S.theme;
+function norm(d){d.notes.forEach(n=>{n.tags=n.tags||[];n.f=n.f||{};n.syn=n.syn||''});d.od=d.od||{done:false,oh:null};{const td=new Date().toISOString().slice(0,10);if(!d.base||d.base.d!==td)d.base={d:td,w:d.notes.filter(n=>n.type==='scene').reduce((a,n)=>a+words(n.text),0)}}d.pane=d.pane||'stage';d.q='';d.tag='';d.focus=false;d.trash=d.trash||[];d.hist=d.hist||{};d.dg=d.dg||500;d.fs=d.fs||17;d.fw=d.fw||720;d.ff=d.ff||'ser';d.gt='';d.bt='';d.rp='';d.gl=false;d.bk=d.bk||Date.now();d.snaps=d.snaps||[];d.notes.forEach(n=>{n.h=n.h||[];n.date=n.date||''});return d}
+function idxLoad(){let x=null;try{x=JSON.parse(localStorage.getItem('scr_idx'))}catch(e){}if(x&&x.list&&x.list.length&&x.list.find(a=>a.id===x.cur))return x;const id='n'+uid();x={cur:id,list:[{id,name:'Mi novela',fold:'Mi novela'}]};try{const old=localStorage.getItem('scr1');if(old)localStorage.setItem('scr_n_'+id,old);localStorage.setItem('scr_idx',JSON.stringify(x))}catch(e){}return x}
+let IDX=idxLoad(),PID=IDX.cur;
+function load(){try{const r=localStorage.getItem('scr_n_'+PID);if(r)return norm(JSON.parse(r))}catch(e){}return norm(seed())}
+let S=load(),tm;function save(){clearTimeout(tm);tm=setTimeout(()=>{try{localStorage.setItem('scr_n_'+PID,JSON.stringify(S))}catch(e){}},300);odSoon()}
+{let t0=null;try{t0=localStorage.getItem('scr_th')}catch(e){}t0=t0||S.theme;if(t0)document.documentElement.dataset.theme=t0}
 const today=()=>new Date().toISOString().slice(0,10),tw=()=>S.notes.filter(n=>n.type==='scene').reduce((a,n)=>a+words(n.text),0);
 if(!S.base||S.base.d!==today())S.base={d:today(),w:tw()};typo();
 const cur=()=>S.notes.find(n=>n.id===S.sel)||S.notes[0],find=t=>S.notes.find(n=>n.title.toLowerCase()===t.trim().toLowerCase());
@@ -261,8 +263,8 @@ if(q.get('error')){odMsg('Microsoft rechazó el acceso: '+(q.get('error_descript
 if(!pk||pk.st!==q.get('state')){odMsg('Respuesta de inicio de sesión no válida.');return true}
 try{await odTokReq({grant_type:'authorization_code',code:q.get('code'),redirect_uri:odRed(),code_verifier:pk.v});odMsg('Conectado con OneDrive.')}catch(e){odMsg('No se pudo conectar: '+e.message)}return true}
 async function gx(path,o={}){const t=await odTok();if(!t)throw new Error('sesión caducada; vuelve a conectar.');const r=await fetch(path.startsWith('http')?path:ODB+path,{...o,headers:{Authorization:'Bearer '+t,...(o.headers||{})}});if(!r.ok&&r.status!==404)throw new Error('OneDrive respondió '+r.status);return r}
-const enc=s=>':/'+encodeURIComponent(s)+':';
-async function odList(){let u='/children?$top=200&$select=name,eTag,file',out=[];while(u){const r=await gx(u);if(r.status===404)return out;const j=await r.json();out.push(...j.value.filter(x=>x.file));u=j['@odata.nextLink']||''}return out}
+const enc=s=>':/'+encodeURIComponent(NV().fold)+'/'+encodeURIComponent(s)+':';
+async function odList(){let u=':/'+encodeURIComponent(NV().fold)+':/children?$top=200&$select=name,eTag,file',out=[];while(u){const r=await gx(u);if(r.status===404)return out;const j=await r.json();out.push(...j.value.filter(x=>x.file));u=j['@odata.nextLink']||''}return out}
 const odGet=async n=>(await gx(enc(n)+'/content')).text();
 async function odPut(n,t){const r=await gx(enc(n)+'/content',{method:'PUT',headers:{'Content-Type':'text/plain; charset=utf-8'},body:t});return(await r.json()).eTag}
 const odDel=n=>gx(enc(n),{method:'DELETE'});
@@ -299,19 +301,35 @@ if(!odOk())h+='<p class="small">La sincronización con OneDrive necesita abrir M
 else if(!tk)h+=`<p class="small">Dirección de redirección que debes registrar en Azure: <b>${esc(odRed())}</b></p><div class="row"><input id="odc" placeholder="Identificador de aplicación (cliente)" value="${esc(odCid())}" style="flex:1" aria-label="Identificador de cliente"><button class="btn" data-c="odLogin()">Conectar</button></div>`;
 else if(!S.od.done)h+='<p class="small">Conectado. ¿Qué hay en este equipo?</p><div class="row"><button class="btn" data-c="odFirst(\'up\')">Subir lo de este equipo</button><button class="btn" data-c="odFirst(\'down\')">Traer lo de OneDrive</button></div><p class="small">«Traer» sustituye lo de este equipo (antes se guarda una instantánea). «Subir» sobrescribe en OneDrive las notas con el mismo título.</p>';
 else h+='<div class="row"><button class="btn" data-c="odSync(1)">Sincronizar ahora</button><button class="btn" data-c="odOut()">Desconectar</button></div>';
-e.innerHTML=h+'<div class="small" id="odm">'+esc(OD.msg)+'</div>'}
+if(tk&&odOk())h+=`<p class="small">Esta novela se guarda en la carpeta «${esc(NV().fold)}» de tu OneDrive.</p><div class="row"><button class="btn" data-c="odNovels()">Ver otras novelas en OneDrive</button></div><div id="odl"></div>`;e.innerHTML=h+'<div class="small" id="odm">'+esc(OD.msg)+'</div>'}
+let NVC=0,ODN=[];
+const NV=()=>IDX.list.find(x=>x.id===PID);
+const fo=n=>{const b=n.replace(/[\\/:*?"<>|#%]/g,'_').replace(/[. ]+$/,'').trim()||'Novela';let f=b,i=2;while(IDX.list.some(x=>x.fold.toLowerCase()===f.toLowerCase()))f=b+' ('+i+++')';return f};
+const blank=()=>norm({sel:null,view:'write',prev:false,notes:[{id:uid(),type:'scene',title:'Primera escena',text:'',chapter:'Capítulo 1',status:'Borrador',goal:0,syn:'',f:{},tags:[],h:[],date:''}]});
+const nvIdx=()=>{try{localStorage.setItem('scr_idx',JSON.stringify(IDX))}catch(e){}};
+function nvFlush(){try{localStorage.setItem('scr_n_'+PID,JSON.stringify(S))}catch(e){}nvIdx()}
+function nvUi(){NVC=0;$('#nvl').innerHTML=IDX.list.map(x=>`<button class="it ${x.id===PID?'on':''}" data-c="nvGo('${x.id}')">${esc(x.name)}</button>`).join('');$('#nvr').value=NV().name;$('#nvdb').textContent='Borrar esta novela de este equipo'}
+function nvOpen(){nvUi();$('#nvd').showModal()}
+function nvGo(id){if(OD.busy){alert('Espera a que termine la sincronización con OneDrive.');return}if(id===PID){$('#nvd').close();return}nvFlush();clearTimeout(OD.tm);PID=id;IDX.cur=id;nvIdx();S=load();typo();AIR='';render();odUi();$('#nvd').close()}
+function nvNew(){if(OD.busy)return;const n=($('#nvn').value||'').trim()||'Nueva novela';nvFlush();const id='n'+uid();IDX.list.push({id,name:n,fold:fo(n)});try{localStorage.setItem('scr_n_'+id,JSON.stringify(blank()))}catch(e){}$('#nvn').value='';nvGo(id)}
+function nvRen(){const v=$('#nvr').value.trim();if(!v)return;NV().name=v;nvIdx();render();nvUi()}
+function nvDel(){if(OD.busy)return;if(!NVC){NVC=1;$('#nvdb').textContent='Pulsa otra vez para borrar «'+NV().name+'» de este equipo';return}NVC=0;const id=PID;IDX.list=IDX.list.filter(x=>x.id!==id);try{localStorage.removeItem('scr_n_'+id)}catch(e){}
+let nx=IDX.list[0];if(!nx){nx={id:'n'+uid(),name:'Mi novela',fold:'Mi novela'};IDX.list.push(nx);try{localStorage.setItem('scr_n_'+nx.id,JSON.stringify(blank()))}catch(e){}}
+PID=nx.id;IDX.cur=PID;nvIdx();S=load();typo();render();nvUi();odUi()}
+async function odNovels(){const e=$('#odl');try{const r=await gx('/children?$top=200&$select=name,folder'),j=r.ok?await r.json():{value:[]};ODN=j.value.filter(x=>x.folder&&!IDX.list.some(n=>n.fold.toLowerCase()===x.name.toLowerCase())).map(x=>x.name);e.innerHTML=ODN.length?ODN.map((n,i)=>`<div class="row"><span class="small" style="flex:1">${esc(n)}</span><button class="chip" data-c="odOpenFolder(${i})">Traer a este equipo</button></div>`).join(''):'<div class="small">No hay más novelas en OneDrive.</div>'}catch(x){odMsg('Error: '+x.message)}}
+async function odOpenFolder(i){const f=ODN[i];if(!f||OD.busy)return;nvFlush();const id='n'+uid();IDX.list.push({id,name:f,fold:f});try{localStorage.setItem('scr_n_'+id,JSON.stringify(blank()))}catch(e){}PID=id;IDX.cur=id;nvIdx();S=load();render();await odFirst('down');odUi()}
 function book(st){const sc=S.notes.filter(n=>n.type==='scene'),chs=[...new Set(sc.map(n=>n.chapter))],tot=sc.reduce((a,n)=>a+words(n.text),0),goal=sc.reduce((a,n)=>a+(n.goal||0),0);
 const txt=chs.map(ch=>'## '+ch+'\n\n'+sc.filter(n=>n.chapter===ch).map(n=>n.text.replace(/\{\{.+?\}\}/g,'').replace(LINK,(m,x)=>{const p=x.split('|');return p[1]||p[0]})).join('\n\n* * *\n\n')).join('\n\n');
 st.innerHTML=`<div class="meta"><span class="title" style="font-size:20px">Manuscrito</span><span class="small">${tot} palabras${goal?` de ${goal}`:''} · ${sc.length} escenas</span><button class="btn" id="cp">Copiar manuscrito</button></div><div class="page"><div class="small" style="margin-bottom:14px">${sc.map(n=>`${esc(n.title)}: ${n.status}`).join(' · ')}</div><div class="book">${esc(txt)}</div></div>`;$('#cp').onclick=()=>copy(txt)}
 function copy(t){try{navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove()}}
-function render(){document.body.classList.toggle('focus',!!S.focus);$('#mn').dataset.p=S.pane;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.v===S.view));document.querySelectorAll('#mnav button').forEach(b=>b.classList.toggle('on',b.dataset.p===S.pane));side();right();stage()}
+function render(){document.body.classList.toggle('focus',!!S.focus);$('#nvb').textContent=NV().name+' ▾';$('#mn').dataset.p=S.pane;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.v===S.view));document.querySelectorAll('#mnav button').forEach(b=>b.classList.toggle('on',b.dataset.p===S.pane));side();right();stage()}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.view=b.dataset.v;S.pane='stage';render()});
 document.querySelectorAll('#mnav button').forEach(b=>b.onclick=()=>{S.pane=b.dataset.p;render()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.focus)foco()});
-$('#th').onclick=()=>{const r=document.documentElement,d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);S.theme=d?'light':'dark';r.dataset.theme=S.theme;save()};
-$('#sync').onclick=()=>{$('#dt').value=JSON.stringify(S);odUi();$('#dlg').showModal()};$('#dx').onclick=()=>$('#dlg').close();$('#dc').onclick=()=>{$('#dt').select();copy($('#dt').value);S.bk=Date.now();save()};
+$('#th').onclick=()=>{const r=document.documentElement,d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);S.theme=d?'light':'dark';r.dataset.theme=S.theme;try{localStorage.setItem('scr_th',S.theme)}catch(e){}save()};
+$('#sync').onclick=()=>{$('#dt').value=JSON.stringify(S);odUi();$('#dlg').showModal()};$('#dx').onclick=()=>$('#dlg').close();$('#nvx').onclick=()=>$('#nvd').close();$('#dc').onclick=()=>{$('#dt').select();copy($('#dt').value);S.bk=Date.now();save()};
 $('#di').onclick=()=>{try{const d=JSON.parse($('#dt').value);if(!Array.isArray(d.notes))throw 0;S=norm(d);render();save();$('#dlg').close()}catch(e){$('#dt').value='No se pudo importar: pega aquí una copia generada por Marginalia.'}};
-const FN={odLogin,odFirst,odSync,odOut,gopen,aiGo,aiCopy,aiIns,aiNew,gz,gr,gf,go,wrap,addN,mv,del,addC,tpl,stag,rest,empt,repl,pick,foco,pal,palG,spr,rv,snapAll,snapR,leer,openT};
+const FN={nvOpen,nvGo,nvNew,nvRen,nvDel,odNovels,odOpenFolder,odLogin,odFirst,odSync,odOut,gopen,aiGo,aiCopy,aiIns,aiNew,gz,gr,gf,go,wrap,addN,mv,del,addC,tpl,stag,rest,empt,repl,pick,foco,pal,palG,spr,rv,snapAll,snapR,leer,openT};
 function run(s){const m=/^(\w+)\((.*)\)$/s.exec(s.trim());if(!m||!FN[m[1]])return;const a=[...m[2].matchAll(/'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"|(-?\d+)/g)].map(x=>x[1]!==undefined?x[1]:x[2]!==undefined?x[2]:+x[3]);FN[m[1]](...a)}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-c]');if(t)run(t.dataset.c)});
 document.addEventListener('mousedown',e=>{const t=e.target.closest('[data-pick]');if(t){e.preventDefault();pick(+t.dataset.pick)}});
