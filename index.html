@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Marginalia</title>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9eef5;--pan:#f6f8fc;--ink:#18222f;--mute:#617086;--line:#cfd9e6;--acc:#1f5fae;--accbg:#dbe7f7;--sc:#1f5fae;--ch:#b5482f;--pl:#6b4fa0;--no:#8a6d1f;
+--ui:'Public Sans',system-ui,sans-serif;--ser:'Literata',Georgia,serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111a27;--pan:#182233;--ink:#e3e9f2;--mute:#93a1b6;--line:#2a3749;--acc:#7db0f0;--accbg:#1e3352;--sc:#7db0f0;--ch:#e58a72;--pl:#b7a0f0;--no:#d6b85c}}
+:root[data-theme="dark"]{--bg:#111a27;--pan:#182233;--ink:#e3e9f2;--mute:#93a1b6;--line:#2a3749;--acc:#7db0f0;--accbg:#1e3352;--sc:#7db0f0;--ch:#e58a72;--pl:#b7a0f0;--no:#d6b85c}
+*{box-sizing:border-box}html,body{height:100%;margin:0}body{background:var(--bg);color:var(--ink);font:14px/1.45 var(--ui)}
+button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
+#app{height:100%;display:flex;flex-direction:column}
+header{display:flex;align-items:center;gap:4px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--pan);flex-wrap:wrap}
+.brand{font:600 18px var(--ser);margin-right:12px}
+.tab,.btn{border:1px solid transparent;background:none;padding:5px 10px;border-radius:6px}
+.tab.on{background:var(--accbg);color:var(--acc);font-weight:600}.btn{border-color:var(--line);background:var(--pan)}.btn:hover,.tab:hover{border-color:var(--acc)}
+.sp{flex:1}
+main{flex:1;min-height:0;display:grid;grid-template-columns:260px 1fr 260px}
+aside{overflow:auto;padding:10px 12px;background:var(--pan)}#side{border-right:1px solid var(--line)}#right{border-left:1px solid var(--line)}
+h4{margin:14px 0 4px;font-size:13px;font-weight:600;color:var(--mute)}
+.it{display:flex;gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 6px;border-radius:5px}
+.it:hover{background:var(--bg)}.it.on{background:var(--accbg);font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--sc)}.char .dot{background:var(--ch)}.place .dot{background:var(--pl)}.note .dot{background:var(--no)}
+.add{display:flex;gap:4px;margin-top:12px}.add input{flex:1;min-width:0}
+input,select{border:1px solid var(--line);background:var(--bg);border-radius:5px;padding:4px 6px}
+#stage{overflow:auto;display:flex;flex-direction:column;min-width:0}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 24px 4px}.meta2{padding:4px 24px 10px;border-bottom:1px solid var(--line)}
+.title{font:600 24px var(--ser);border:0;background:none;flex:1;min-width:160px;padding:0}
+.tb{display:flex;gap:4px;padding:6px 24px 0;max-width:768px;margin:0 auto;width:100%}
+.page{position:relative;width:100%;max-width:var(--fw,720px);margin:0 auto;padding:12px 24px 80px;flex:1}
+textarea#ed{width:100%;min-height:60vh;border:0;background:none;outline:0;resize:none;font:var(--fs,17px)/1.75 var(--ff,var(--ser))}
+.pv{font:var(--fs,17px)/1.75 var(--ff,var(--ser))}.pv p{margin:0 0 1em}.pv h3{font-size:19px}
+#ac{position:absolute;right:24px;top:4px;background:var(--pan);border:1px solid var(--line);border-radius:6px;min-width:190px;z-index:5;display:none;padding:3px}
+a.wl{color:var(--acc);text-decoration:underline dotted;cursor:pointer}a.wl.new{color:var(--ch)}
+.bar{height:5px;background:var(--line);border-radius:3px;margin:4px 0 10px}.bar i{display:block;height:100%;background:var(--acc);border-radius:3px}
+.small{color:var(--mute);font-size:12px}.chip{font-size:12px;border:1px solid var(--line);border-radius:10px;padding:1px 8px;background:none}.chip.on{background:var(--accbg);color:var(--acc)}
+.fld{display:flex;flex-direction:column;font-size:12px;color:var(--mute);flex:1;min-width:140px}
+.graph{padding:12px;flex:1;position:relative}.graph svg{width:100%;height:calc(100vh - 230px);min-height:420px;touch-action:none;cursor:grab;border:1px solid var(--line);border-radius:8px;background:var(--pan)}.gt{position:absolute;right:24px;top:24px;display:flex;flex-direction:column;gap:4px}
+.graph text{fill:var(--ink);font-size:12px;paint-order:stroke;stroke:var(--pan);stroke-width:3px;pointer-events:none}.graph line{stroke:var(--mute);stroke-opacity:.5;stroke-width:1.2}.graph g.n{cursor:pointer}
+.brd{display:flex;gap:12px;overflow:auto;padding:14px 20px;flex:1;align-items:flex-start}
+.col{min-width:230px;width:250px;background:var(--pan);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:120px}
+.card{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:8px;margin:6px 0;cursor:grab}.card b{font-weight:600}
+.book{white-space:pre-wrap;font:16px/1.7 var(--ser)}
+dialog{border:1px solid var(--line);background:var(--pan);color:var(--ink);border-radius:10px;width:min(560px,92vw)}
+dialog textarea{width:100%;height:220px;font:12px monospace;background:var(--bg);border:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:1px}.cm{background:var(--accbg);color:var(--acc);border-radius:3px;padding:0 4px;font:13px var(--ui)}.sm{width:70px}.row{display:flex;gap:4px;align-items:center;margin:4px 0}
+#mnav{display:none}#fx{display:none;position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:10px;z-index:9}
+body.focus aside,body.focus header,body.focus .meta,body.focus .meta2,body.focus #mnav{display:none}body.focus main{display:block}body.focus #fx{display:block}
+@media (max-width:900px){main{display:block;overflow:auto}aside{border:0!important;min-height:100%}
+main[data-p="side"] #stage,main[data-p="side"] #right,main[data-p="stage"] #side,main[data-p="stage"] #right,main[data-p="right"] #side,main[data-p="right"] #stage{display:none}
+#mnav{display:flex;border-top:1px solid var(--line);background:var(--pan)}#mnav button{flex:1;border:0;background:none;padding:12px 0}#mnav .on{color:var(--acc);font-weight:600;background:var(--accbg)}
+.meta,.meta2,.page,.tb{padding-left:14px;padding-right:14px}.title{font-size:21px}}
+</style></head><body><div id="app">
+<header><span class="brand">Marginalia</span>
+<button class="tab" data-v="write">Escribir</button><button class="tab" data-v="board">Tablero</button><button class="tab" data-v="time">Cronología</button><button class="tab" data-v="mat">Matriz</button><button class="tab" data-v="stat">Estadísticas</button><button class="tab" data-v="graph">Grafo</button><button class="tab" data-v="book">Manuscrito</button><button class="tab" data-v="ai">Asistente</button>
+<span class="sp"></span><span class="small" id="odh"></span><button class="btn" data-c="pal()">Ir a…</button><button class="btn" id="th" aria-label="Cambiar tema">Tema</button><button class="btn" id="sync">Copia y sincronizar</button></header>
+<main id="mn"><aside id="side"></aside><section id="stage"></section><aside id="right"></aside></main>
+<nav id="mnav"><button data-p="side">Notas</button><button data-p="stage">Texto</button><button data-p="right">Panel</button></nav>
+<button class="btn" id="fx" data-c="foco()">Salir del modo foco</button></div>
+<dialog id="pal"><input id="pi" placeholder="Ir a una nota o vista…" style="width:100%" aria-label="Ir a"><div id="pl"></div><p class="small">Pulsa Enter para abrir el primer resultado. Atajo: Ctrl+K.</p></dialog><dialog id="dlg"><h3 style="margin-top:0;font-family:var(--ser)">Copia y sincronizar</h3>
+<p class="small">Copia este texto y guárdalo como archivo .json en tu OneDrive. En otro equipo, ábrelo, pégalo aquí y pulsa Importar.</p>
+<div id="odu"></div><h4>Copia manual</h4><textarea id="dt"></textarea><p style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:0"><button class="btn" id="dc">Copiar</button><button class="btn" id="di">Importar</button><button class="btn" id="dx">Cerrar</button></p></dialog>
+<script>addEventListener('error',function(e){var d=document.createElement('pre');d.style.cssText='position:fixed;z-index:99;left:0;right:0;bottom:0;margin:0;padding:8px 12px;background:#a3452f;color:#fff;font:12px monospace;white-space:pre-wrap';d.textContent='Error: '+e.message+(e.lineno?' (línea '+e.lineno+')':'');(document.body||document.documentElement).appendChild(d)})</script>
+<script>
+(()=>{
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9),LINK=/\[\[([^\[\]]+)\]\]/g,reEsc=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+const TY={scene:'Escena',char:'Personaje',place:'Lugar',note:'Nota'},ST=['Borrador','Revisión','Final'],FL={char:['Edad','Aspecto','Rol','Motivación'],place:['Tipo','Ambiente']};
+const words=t=>(t.trim().match(/\S+/g)||[]).length;let DR=null,CH=[],AC=[],AI=0;
+function seed(){const n=(type,title,text,ch,goal,syn,f,tags)=>({id:uid(),type,title,text,chapter:ch||'',status:'Borrador',goal:goal||0,syn:syn||'',f:f||{},tags:tags||[]});
+return{sel:null,view:'write',prev:false,notes:[
+n('scene','La librería de lance','[[Mateo Rivas]] empuja la puerta de una librería de lance y deja que el olor a papel viejo le ordene los pensamientos. Detrás del mostrador, [[El librero]] no levanta la vista.\n\nMateo elige una novela cualquiera. No sabe todavía que es la que lo estaba esperando.','I. El hallazgo',600,'Mateo compra la novela.',{},['misterio']),
+n('scene','Las diez últimas páginas','Las diez últimas páginas del libro no están impresas: están **escritas a mano**. La letra es idéntica a la suya. Cuenta lo que ocurrió ayer por la tarde, y [[Elena]] aparece en ellas.','I. El hallazgo',800,'Descubre la letra idéntica.',{},['misterio']),
+n('scene','Elena ya estaba en el libro','Elena aparece en el libro antes de que ocurran las escenas que Mateo recuerda. Él busca una explicación metódica; ella solo pregunta por [[El otro Mateo]].','II. El otro',700,'Elena y el otro Mateo.',{},['pasado']),
+n('char','Mateo Rivas','Metódico; trabaja revisando textos o datos. Compra en librerías de lance.','',0,'',{Edad:'Casi cincuenta años',Aspecto:'Pelo corto entrecano, barba cuidada con canas, gafas de montura al aire',Rol:'Protagonista'}),
+n('char','El librero','Librero de viejo. ¿Don Anselmo o Julián? Aún es ambiguo.'),
+n('char','Elena','Compañera y confidente de [[Mateo Rivas]].'),
+n('char','El otro Mateo','Tocayo, o sombra del pasado de [[Mateo Rivas]].','',0,'',{},['pasado']),
+n('note','Premisa','Mateo compra una novela de segunda mano cuyas últimas diez páginas están escritas a mano con una letra idéntica a la suya, narrando lo ocurrido ayer por la tarde.')]}}
+function norm(d){d.notes.forEach(n=>{n.tags=n.tags||[];n.f=n.f||{};n.syn=n.syn||''});d.od=d.od||{done:false,oh:null};d.pane=d.pane||'stage';d.q='';d.tag='';d.focus=false;d.trash=d.trash||[];d.hist=d.hist||{};d.dg=d.dg||500;d.fs=d.fs||17;d.fw=d.fw||720;d.ff=d.ff||'ser';d.gt='';d.bt='';d.rp='';d.gl=false;d.bk=d.bk||Date.now();d.snaps=d.snaps||[];d.notes.forEach(n=>{n.h=n.h||[];n.date=n.date||''});return d}
+function load(){try{const r=localStorage.getItem('scr1');if(r)return norm(JSON.parse(r))}catch(e){}return norm(seed())}
+let S=load(),tm;function save(){clearTimeout(tm);tm=setTimeout(()=>{try{localStorage.setItem('scr1',JSON.stringify(S))}catch(e){}},300);odSoon()}
+if(S.theme)document.documentElement.dataset.theme=S.theme;
+const today=()=>new Date().toISOString().slice(0,10),tw=()=>S.notes.filter(n=>n.type==='scene').reduce((a,n)=>a+words(n.text),0);
+if(!S.base||S.base.d!==today())S.base={d:today(),w:tw()};typo();
+const cur=()=>S.notes.find(n=>n.id===S.sel)||S.notes[0],find=t=>S.notes.find(n=>n.title.toLowerCase()===t.trim().toLowerCase());
+const outs=n=>[...new Set([...n.text.matchAll(LINK)].map(m=>m[1].split('|')[0].trim()))];
+const backs=n=>S.notes.filter(m=>m!==n&&outs(m).some(l=>l.toLowerCase()===n.title.toLowerCase()));
+const ments=n=>S.notes.filter(m=>m!==n&&!backs(n).includes(m)&&m.text.toLowerCase().includes(n.title.toLowerCase()));
+function go(id){S.sel=id;S.view='write';S.pane='stage';render();save()}
+function mk(type,title,ch){const n={id:uid(),type,title,text:{char:'Relaciones:\n\nSecretos:\n',place:'Descripción:\n'}[type]||'',chapter:type==='scene'?(ch||'Capítulo 1'):'',status:'Borrador',goal:0,syn:'',f:{},tags:[],h:[],date:''};S.notes.push(n);return n}
+function openT(t){go((find(t)||mk('note',t.trim())).id)}
+function mvTo(id){const d=S.notes.find(n=>n.id===DR),t=S.notes.find(n=>n.id===id);if(!d||d===t||t.type!=='scene'||d.type!=='scene')return;S.notes=S.notes.filter(n=>n!==d);d.chapter=t.chapter;S.notes.splice(S.notes.indexOf(t),0,d);DR=null;render();save()}
+function dropCh(i){const d=S.notes.find(n=>n.id===DR);if(!d||d.type!=='scene')return;const ch=CH[i];S.notes=S.notes.filter(n=>n!==d);d.chapter=ch;let k=-1;S.notes.forEach((n,j)=>{if(n.type==='scene'&&n.chapter===ch)k=j});k<0?S.notes.push(d):S.notes.splice(k+1,0,d);DR=null;render();save()}
+function stag(t){S.tag=S.tag===t?'':t;side()}
+function lst(){const c=cur(),q=S.q.toLowerCase(),f=n=>(!q||(n.title+' '+n.text+' '+n.tags.join(' ')).toLowerCase().includes(q))&&(!S.tag||n.tags.includes(S.tag));
+const row=n=>`<button class="it ${n.type} ${n.id===c.id?'on':''}" draggable="${n.type==='scene'}" data-drag="${n.id}" data-drop="${n.id}" data-c="go('${n.id}')"><span class="dot"></span>${esc(n.title)}</button>`;let h='';
+if(q||S.tag)h='<h4>Resultados</h4>'+(S.notes.filter(f).map(row).join('')||'<div class="small">Sin resultados.</div>');
+else{const sc=S.notes.filter(n=>n.type==='scene');CH=[...new Set(sc.map(n=>n.chapter))];h='<h4>Novela</h4>'+CH.map((ch,i)=>`<div class="small" style="margin-top:8px" data-dropch="${i}">${esc(ch)}</div>`+sc.filter(n=>n.chapter===ch).map(row).join('')).join('');
+for(const t of['char','place','note']){const l=S.notes.filter(n=>n.type===t);if(l.length)h+=`<h4>${TY[t]}s</h4>`+l.map(row).join('')}}
+$('#lst').innerHTML=h}
+function side(){const tg=[...new Set(S.notes.flatMap(n=>n.tags))].sort();
+$('#side').innerHTML=`<input id="q" type="search" placeholder="Buscar en todo" value="${esc(S.q)}" style="width:100%" aria-label="Buscar"><div class="row"><input id="rp" placeholder="Reemplazar por" value="${esc(S.rp)}" style="flex:1;min-width:0" aria-label="Reemplazar por"><button class="chip" data-c="repl()">Reemplazar todo</button></div>`+(tg.length?`<div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap">${tg.map(t=>`<button class="chip ${S.tag===t?'on':''}" data-c="stag('${t}')">#${esc(t)}</button>`).join('')}</div>`:'')+`<div id="lst"></div>${S.trash.length?`<h4>Papelera</h4>${S.trash.map((t,i)=>`<div class="row"><span class="small" style="flex:1">${esc(t.title)}</span><button class="chip" data-c="rest(${i})">Restaurar</button></div>`).join('')}<button class="chip" data-c="empt()">Vaciar papelera</button>`:''}<div class="add"><input id="nt" placeholder="Título nuevo" aria-label="Título nuevo"><select id="nty">${Object.entries(TY).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div><button class="btn" style="margin-top:6px;width:100%" data-c="addN()">Crear</button>`;
+$('#q').oninput=e=>{S.q=e.target.value;lst()};CH=[];lst()}
+function addN(){const t=$('#nt').value.trim();if(!t||find(t))return;go(mk($('#nty').value,t,cur().chapter).id)}
+function pv(t){return t.split(/\n{2,}/).map(p=>{p=esc(p).replace(/\{\{(.+?)\}\}/g,'<span class="cm">$1</span>').replace(LINK,(m,x)=>{const[l,a]=x.split('|');return `<a class="wl ${find(l)?'':'new'}" data-l="${l.trim()}">${a||l}</a>`}).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>').replace(/\n/g,'<br>');return /^# /.test(p)?`<h3>${p.slice(2)}</h3>`:`<p>${p}</p>`}).join('')}
+function right(){const n=cur(),b=backs(n),m=ments(n),o=outs(n),w=words(n.text);
+const li=a=>a.length?a.map(x=>`<button class="it ${x.type}" data-c="go('${x.id}')"><span class="dot"></span>${esc(x.title)}</button>`).join(''):'<div class="small">Ninguno</div>';
+$('#right').innerHTML=`<h4>Palabras</h4><div>${w}${n.goal?` / ${n.goal}`:''}</div>`+(n.goal?`<div class="bar"><i style="width:${Math.min(100,w/n.goal*100)}%"></i></div>`:'')+
+`<h4>${n.type==='scene'?'Enlazada desde':'Aparece en escenas'}</h4>${li(n.type==='scene'?b:b.filter(x=>x.type==='scene'))}<h4>Enlaza a</h4>`+(o.length?o.map(l=>find(l)?`<button class="it ${find(l).type}" data-c="go('${find(l).id}')"><span class="dot"></span>${esc(l)}</button>`:`<button class="it" data-c="openT(${esc(JSON.stringify(l)).replace(/"/g,'&quot;')})">+ Crear “${esc(l)}”</button>`).join(''):'<div class="small">Ninguno</div>')+`<h4>Menciones sin enlazar</h4>${li(m)}`+extra(n)}
+function wrap(a,b){const e=$('#ed');if(!e)return;const s=e.selectionStart,t=e.selectionEnd,v=e.value;e.value=v.slice(0,s)+a+v.slice(s,t)+b+v.slice(t);e.setSelectionRange(s+a.length,t+a.length);e.focus();inp()}
+function inp(){const n=cur(),e=$('#ed');snap(n);n.text=e.value;S.hist[today()]=Math.max(0,tw()-S.base.w);right();save();const m=/\[\[([^\[\]\n]*)$/.exec(e.value.slice(0,e.selectionStart));
+if(!m)AC=[];else{const q=m[1].toLowerCase();AC=S.notes.filter(x=>x!==n&&x.title.toLowerCase().includes(q)).slice(0,6).map(x=>x.title);AI=0}drawAC()}
+function drawAC(){const b=$('#ac');b.innerHTML=AC.map((t,i)=>`<button class="it ${i===AI?'on':''}" data-pick="${i}">${esc(t)}</button>`).join('');b.style.display=AC.length?'block':'none'}
+function pick(i){const e=$('#ed'),p=e.selectionStart,b=e.value.slice(0,p).replace(/\[\[[^\[\]\n]*$/,'[['+AC[i]+']]');e.value=b+e.value.slice(p);e.setSelectionRange(b.length,b.length);e.focus();inp()}
+function foco(){S.focus=!S.focus;document.body.classList.toggle('focus',S.focus)}
+function stage(){cancelAnimationFrame(GA);const n=cur(),st=$('#stage');if(S.view==='graph')return graph(st);if(S.view==='book')return book(st);if(S.view==='board')return board(st);if(S.view==='time')return time(st);if(S.view==='mat')return mat(st);if(S.view==='ai')return aiView(st);if(S.view==='stat')return stats(st);
+const fl=FL[n.type]||[];
+st.innerHTML=`<div class="meta"><input class="title" id="ti" value="${esc(n.title)}" aria-label="Título"><span class="small">${TY[n.type]}</span>
+${n.type==='scene'?`<input id="chp" value="${esc(n.chapter)}" size="12" aria-label="Capítulo"><select id="stt" aria-label="Estado">${ST.map(s=>`<option${s===n.status?' selected':''}>${s}</option>`).join('')}</select><input id="gl" type="number" min="0" step="50" value="${n.goal||''}" placeholder="Objetivo" style="width:90px" aria-label="Objetivo de palabras"><input id="dt2" type="date" value="${n.date}" aria-label="Fecha en la historia" title="Fecha en la historia"><button class="btn" data-c="mv(-1)" aria-label="Subir escena">↑</button><button class="btn" data-c="mv(1)" aria-label="Bajar escena">↓</button>`:''}
+<button class="btn" data-c="del()">Borrar</button></div>
+<div class="meta meta2"><label class="fld">Etiquetas<input id="tg" value="${esc(n.tags.join(', '))}" placeholder="trama, pasado…"></label>
+${n.type==='scene'?`<label class="fld" style="flex:2">Sinopsis<input id="sy" value="${esc(n.syn)}"></label><label class="fld">Punto de vista<input id="pov" value="${esc(n.pov||'')}"></label>`:fl.map(k=>`<label class="fld">${k}<input data-k="${k}" value="${esc(n.f[k]||'')}"></label>`).join('')+(fl.length?`${n.img?`<img src="${n.img}" alt="" style="height:64px;border-radius:6px">`:''}<label class="fld">Imagen<input id="im" type="file" accept="image/*"></label>`:'')}</div>
+<div class="tb"><button class="btn" data-c="wrap('**','**')" aria-label="Negrita"><b>N</b></button><button class="btn" data-c="wrap('*','*')" aria-label="Cursiva"><i>C</i></button><button class="btn" data-c="wrap('[[',']]')">[[ ]]</button><button class="btn" data-c="wrap('{{','}}')">Comentario</button><span class="sp"></span><button class="btn" id="pvb">${S.prev?'Editar':'Vista'}</button><button class="btn" data-c="leer()">Leer en voz alta</button><button class="btn" data-c="foco()">Modo foco</button></div>
+<div class="page"><div id="ac"></div>${S.prev?`<div class="pv" id="pv">${pv(n.text)||'<span class="small">Nota vacía. Escribe y enlaza con [[otra nota]].</span>'}</div>`:`<textarea id="ed" placeholder="Escribe aquí. Enlaza con [[Nombre de otra nota]]." aria-label="Texto">${esc(n.text)}</textarea>`}</div>`;
+$('#ti').onchange=e=>{const o=n.title,v=e.target.value.trim(),x=find(v);if(!v||(x&&x!==n)){e.target.value=o;return}
+const re=new RegExp('\\[\\[\\s*'+reEsc(o)+'\\s*(\\|[^\\]]*)?\\]\\]','gi');S.notes.forEach(m=>m.text=m.text.replace(re,(x,a)=>'[['+v+(a||'')+']]'));n.title=v;render();save()};
+$('#tg').onchange=e=>{n.tags=[...new Set(e.target.value.split(',').map(t=>t.trim().toLowerCase().replace(/[^\p{L}\p{N}_-]/gu,'')).filter(Boolean))];side();save()};
+if(n.type==='scene'){$('#chp').onchange=e=>{n.chapter=e.target.value||'Capítulo 1';render();save()};$('#stt').onchange=e=>{n.status=e.target.value;save()};$('#gl').oninput=e=>{n.goal=+e.target.value||0;right();save()};$('#sy').oninput=e=>{n.syn=e.target.value;save()};$('#dt2').onchange=e=>{n.date=e.target.value;save()};$('#pov').oninput=e=>{n.pov=e.target.value;save()}}
+else{st.querySelectorAll('[data-k]').forEach(i=>i.oninput=e=>{n.f[i.dataset.k]=e.target.value;save()});const im=$('#im');if(im)im.onchange=e=>img(e.target.files[0])}
+$('#pvb').onclick=()=>{S.prev=!S.prev;stage()};
+if(S.prev)$('#pv').onclick=e=>{const l=e.target.dataset&&e.target.dataset.l;if(l)openT(l)};
+else{const e=$('#ed');e.oninput=inp;e.onkeydown=ev=>{if(ev.ctrlKey||ev.metaKey){if(ev.key==='b'){ev.preventDefault();wrap('**','**')}if(ev.key==='i'){ev.preventDefault();wrap('*','*')}}
+if(AC.length){if(ev.key==='ArrowDown'){ev.preventDefault();AI=(AI+1)%AC.length;drawAC()}else if(ev.key==='ArrowUp'){ev.preventDefault();AI=(AI+AC.length-1)%AC.length;drawAC()}else if(ev.key==='Enter'||ev.key==='Tab'){ev.preventDefault();pick(AI)}else if(ev.key==='Escape'){AC=[];drawAC()}}}}}
+function mv(d){const n=cur(),i=S.notes.indexOf(n);let j=i+d;while(S.notes[j]&&S.notes[j].type!=='scene')j+=d;if(!S.notes[j])return;[S.notes[i],S.notes[j]]=[S.notes[j],S.notes[i]];render();save()}
+function del(){const n=cur();if(S.notes.length<2)return;S.trash.push(n);S.notes=S.notes.filter(x=>x!==n);S.sel=S.notes[0].id;render();save()}
+function board(st){const sc=S.notes.filter(n=>n.type==='scene');CH=[...new Set(sc.map(n=>n.chapter))];
+st.innerHTML=`<div class="meta"><span class="title" style="font-size:20px">Tablero</span><input id="nc" placeholder="Nuevo capítulo" aria-label="Nuevo capítulo"><button class="btn" data-c="addC()">Añadir capítulo</button><select data-ch="bt" aria-label="Filtrar por etiqueta"><option value="">Todas las etiquetas</option>${[...new Set(S.notes.flatMap(n=>n.tags))].map(t=>`<option${S.bt===t?' selected':''}>${t}</option>`).join('')}</select><select id="tp" aria-label="Plantilla"><option value="0">Tres actos</option><option value="1">Viaje del héroe</option></select><button class="btn" data-c="tpl()">Añadir esqueleto</button></div><div class="small" style="padding:0 24px 4px">Arrastra las tarjetas para cambiar su orden o su capítulo.</div>
+<div class="brd">${CH.map((ch,i)=>`<div class="col" data-dropch="${i}"><b>${esc(ch)}</b> <span class="small">${sc.filter(n=>n.chapter===ch).reduce((a,n)=>a+words(n.text),0)} palabras</span>${sc.filter(n=>n.chapter===ch&&(!S.bt||n.tags.includes(S.bt))).map(n=>`<div class="card" style="border-left:4px solid ${tc(n)}" draggable="true" data-drag="${n.id}" data-drop="${n.id}" data-c="go('${n.id}')"><b>${esc(n.title)}</b><div class="small">${esc(n.syn)}</div><div class="small">${n.status} · ${words(n.text)}${n.goal?'/'+n.goal:''} ${n.tags.map(t=>'#'+esc(t)).join(' ')} ${n.pov?'· '+esc(n.pov):''}</div></div>`).join('')}</div>`).join('')}</div>`}
+function snap(n,f){const l=n.h[n.h.length-1];if(!n.text||(l&&l.x===n.text))return;if(f||!l||Date.now()-l.t>3e5){n.h.push({t:Date.now(),x:n.text});if(n.h.length>15)n.h.shift()}}
+function rv(i){const n=cur(),x=n.h[i].x;snap(n,1);n.text=x;render();save()}
+function rest(i){S.notes.push(...S.trash.splice(i,1));render();save()}
+function empt(){S.trash=[];render();save()}
+function repl(){const q=S.q;if(!q)return;const re=new RegExp(reEsc(q),'gi'),v=$('#rp').value;S.rp=v;S.notes.forEach(n=>{if(n.text.toLowerCase().includes(q.toLowerCase())){snap(n,1);n.text=n.text.replace(re,()=>v)}});render();save()}
+function typo(){const r=document.documentElement.style;r.setProperty('--fs',S.fs+'px');r.setProperty('--fw',S.fw+'px');r.setProperty('--ff',S.ff==='ui'?'var(--ui)':'var(--ser)')}
+function streak(){let c=0,d=new Date();for(;;){const k=d.toISOString().slice(0,10);if((S.hist[k]||0)>=S.dg&&S.dg>0)c++;else if(k!==today())break;d.setDate(d.getDate()-1)}return c}
+function tc(n){const k=n.pov||n.tags[0];return k?`hsl(${[...k].reduce((a,c)=>a+c.charCodeAt(0)*37,0)%360} 55% 50%)`:'var(--line)'}
+function tpl(){const T=[['Acto I','Acto II','Acto III'],['Mundo ordinario','Llamada','Umbral','Pruebas','Abismo','Regreso']][+$('#tp').value];T.forEach(c=>{if(!S.notes.some(n=>n.type==='scene'&&n.chapter===c))mk('scene','Escena nueva',c)});render();save()}
+function time(st){const sc=S.notes.filter(n=>n.type==='scene').sort((a,b)=>(a.date||'~').localeCompare(b.date||'~'));st.innerHTML=`<div class="meta"><span class="title" style="font-size:20px">Cronología</span></div><div class="page"><div class="small" style="margin-bottom:12px">Ordenada por la fecha de cada escena en la historia. Las escenas sin fecha van al final.</div>${sc.map(n=>`<button class="it" data-c="go('${n.id}')"><b style="min-width:92px;font-weight:600">${n.date||'Sin fecha'}</b>${esc(n.title)}<span class="small"> · ${esc(n.chapter)}</span></button>`).join('')}</div>`}
+function extra(n){const cs=[...n.text.matchAll(/\{\{(.+?)\}\}/g)].map(m=>m[1]),td=S.hist[today()]||0;
+return (Date.now()-S.bk>2592e5?`<h4 style="color:var(--ch)">Copia pendiente</h4><div class="small">Hace días que no copias tu trabajo. Usa «Copia y sincronizar».</div>`:'')+`<h4>Comentarios</h4>`+(cs.length?cs.map(c=>`<div class="small"><span class="cm">${esc(c)}</span></div>`).join(''):'<div class="small">Ninguno</div>')+`<h4>Hoy</h4><div>${td} / <input class="sm" type="number" min="0" step="100" value="${S.dg}" data-ch="dg" aria-label="Objetivo diario"> palabras</div><div class="bar"><i style="width:${Math.min(100,td/(S.dg||1)*100)}%"></i></div><div class="small">Racha: ${streak()} días</div><h4>Sprint</h4><div class="row"><button class="chip" data-c="spr()">${SP?'Parar':'Empezar 25 min'}</button><span id="spt" class="small"></span></div><h4>Repeticiones</h4>${rep(n)}<h4>Versiones</h4>`+(n.h.length?n.h.slice().reverse().map((v,j)=>`<div class="row"><span class="small" style="flex:1">${new Date(v.t).toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'})} · ${words(v.x)} pal.</span><button class="chip" data-c="rv(${n.h.length-1-j})">Restaurar</button></div>`).join(''):'<div class="small">Aún sin versiones.</div>')+`<h4>Texto</h4><div class="row"><select data-ch="ff" aria-label="Tipografía"><option value="ser"${S.ff==='ser'?' selected':''}>Serif</option><option value="ui"${S.ff==='ui'?' selected':''}>Sans</option></select><input class="sm" type="number" min="13" max="26" value="${S.fs}" data-ch="fs" aria-label="Tamaño"><input class="sm" type="number" min="480" max="1100" step="40" value="${S.fw}" data-ch="fw" aria-label="Ancho"></div>`}
+let SP=null,PI=[];const V={write:'Escribir',board:'Tablero',time:'Cronología',mat:'Matriz',stat:'Estadísticas',graph:'Grafo',book:'Manuscrito',ai:'Asistente'};
+function spr(){SP=SP?null:{end:Date.now()+15e5,w:tw()};right()}
+function sprT(){const e=$('#spt');if(!e)return;if(!SP){e.textContent='';return}const r=SP.end-Date.now(),w=tw()-SP.w;e.textContent=r<=0?'Terminado: '+w+' palabras':Math.floor(r/6e4)+':'+String(Math.floor(r/1e3)%60).padStart(2,'0')+' · '+w+' palabras'}
+setInterval(sprT,1000);
+function rep(n){const f={};(n.text.toLowerCase().match(/[a-záéíóúñü]{5,}/g)||[]).forEach(w=>f[w]=(f[w]||0)+1);const l=Object.entries(f).filter(x=>x[1]>=4).sort((a,b)=>b[1]-a[1]).slice(0,6);return l.length?l.map(x=>`<span class="cm">${x[0]} ×${x[1]}</span>`).join(' '):'<div class="small">Nada llamativo.</div>'}
+function leer(){const s=window.speechSynthesis;if(!s)return;if(s.speaking){s.cancel();return}const u=new SpeechSynthesisUtterance(cur().text.replace(/\{\{.+?\}\}/g,'').replace(LINK,(m,x)=>x.split('|').pop()));u.lang='es-ES';s.speak(u)}
+function img(f){if(!f)return;const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,200/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);cur().img=c.toDataURL('image/jpeg',.7);render();save()};i.src=r.result};r.readAsDataURL(f)}
+function pal(){$('#pal').showModal();$('#pi').value='';palD()}
+function palD(){const q=$('#pi').value.toLowerCase();PI=[...Object.entries(V).map(([k,v])=>({l:'Ir a '+v,f:()=>{S.view=k;S.pane='stage';render()}})),...S.notes.map(n=>({l:n.title+' ('+TY[n.type]+')',f:()=>go(n.id)}))].filter(x=>x.l.toLowerCase().includes(q)).slice(0,8);$('#pl').innerHTML=PI.map((x,i)=>`<button class="it" data-c="palG(${i})">${esc(x.l)}</button>`).join('')}
+function palG(i){$('#pal').close();PI[i].f()}
+$('#pi').oninput=palD;$('#pi').onkeydown=e=>{if(e.key==='Enter'&&PI[0])palG(0)};
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();pal()}});
+function snapAll(){S.snaps.push({t:Date.now(),name:$('#sn').value.trim()||'Instantánea',d:JSON.stringify(S.notes)});if(S.snaps.length>8)S.snaps.shift();render();save()}
+function snapR(i){const d=S.snaps[i].d;S.snaps.push({t:Date.now(),name:'Antes de restaurar',d:JSON.stringify(S.notes)});if(S.snaps.length>8)S.snaps.shift();S.notes=JSON.parse(d);S.sel=S.notes[0].id;render();save()}
+function stats(st){const sc=S.notes.filter(n=>n.type==='scene'),chs=[...new Set(sc.map(n=>n.chapter))],cw=chs.map(c=>[c,sc.filter(n=>n.chapter===c).reduce((a,n)=>a+words(n.text),0)]),mx=Math.max(1,...cw.map(x=>x[1])),days=[...Array(14)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-13+i);const k=d.toISOString().slice(0,10);return[k.slice(5),S.hist[k]||0]}),m2=Math.max(1,S.dg,...days.map(x=>x[1])),bar=(l,v,m)=>`<div class="row"><span class="small" style="width:110px">${esc(l)}</span><div class="bar" style="flex:1;margin:0"><i style="width:${v/m*100}%"></i></div><span class="small" style="width:50px">${v}</span></div>`;
+st.innerHTML=`<div class="meta"><span class="title" style="font-size:20px">Estadísticas</span></div><div class="page"><h4>Palabras por capítulo</h4>${cw.map(x=>bar(x[0],x[1],mx)).join('')}<h4>Últimos 14 días</h4>${days.map(x=>bar(x[0],x[1],m2)).join('')}<h4>Instantáneas de la novela</h4><div class="row"><input id="sn" placeholder="Nombre de la instantánea" style="flex:1"><button class="btn" data-c="snapAll()">Guardar</button></div>${S.snaps.map((s,i)=>`<div class="row"><span class="small" style="flex:1">${esc(s.name)} · ${new Date(s.t).toLocaleDateString('es-ES')}</span><button class="chip" data-c="snapR(${i})">Restaurar</button></div>`).join('')||'<div class="small">Aún no hay instantáneas.</div>'}</div>`}
+function mat(st){const sc=S.notes.filter(n=>n.type==='scene'),ch=S.notes.filter(n=>n.type==='char'),has=(s,c)=>outs(s).some(l=>l.toLowerCase()===c.title.toLowerCase())||s.text.toLowerCase().includes(c.title.toLowerCase()),vac=sc.filter(s=>!ch.some(c=>has(s,c)));
+st.innerHTML=`<div class="meta"><span class="title" style="font-size:20px">Matriz personaje × escena</span></div><div class="page" style="max-width:none;overflow:auto"><table style="border-collapse:collapse"><tr><th></th>${sc.map(s=>`<th class="small" style="padding:4px 8px;max-width:100px"><a class="wl" data-c="go('${s.id}')">${esc(s.title)}</a></th>`).join('')}</tr>${ch.map(c=>`<tr><td style="padding:4px 8px;font-weight:600">${esc(c.title)}${sc.some(s=>has(s,c))?'':' <span class="cm">sin escenas</span>'}</td>${sc.map(s=>`<td style="text-align:center;border:1px solid var(--line)">${has(s,c)?'●':''}</td>`).join('')}</tr>`).join('')}</table><p class="small">Escenas sin ningún personaje: ${vac.map(s=>esc(s.title)).join(', ')||'ninguna'}</p></div>`}
+function addC(){const v=$('#nc').value.trim();if(!v||CH.includes(v))return;mk('scene','Escena nueva',v);render();save()}
+let GA=0,GV={x:0,y:0,k:1,r:0},GFN=null;
+function gz(f){GFN&&GFN.zoom(f>0?1.25:.8)}function gr(d){GFN&&GFN.rot(d)}function gf(){GFN&&GFN.fit()}
+function graph(st){cancelAnimationFrame(GA);
+const N=S.notes.filter(n=>(!S.gt||n.type===S.gt)&&(!S.tag||n.tags.includes(S.tag))&&(!S.gl||n===cur()||outs(cur()).some(l=>l.toLowerCase()===n.title.toLowerCase())||backs(cur()).includes(n))),NS='http://www.w3.org/2000/svg',col={scene:'--sc',char:'--ch',place:'--pl',note:'--no'};
+st.innerHTML=`<div class="meta"><span class="title" style="font-size:20px">Grafo</span><select data-ch="gt" aria-label="Filtrar por tipo"><option value="">Todos los tipos</option>${Object.entries(TY).map(([k,v])=>`<option value="${k}"${S.gt===k?' selected':''}>${v}</option>`).join('')}</select><label class="small"><input type="checkbox" data-ch="gl" ${S.gl?'checked':''}> Solo la nota actual y sus vecinas</label><span class="small" id="gsel">Seleccionada: ${esc(cur().title)}</span><button class="btn" data-c="gopen()">Abrir nota</button></div><div class="graph"><svg id="gs" role="img" aria-label="Grafo de notas"><g id="gv"></g></svg><div class="gt"><button class="btn" data-c="gz(1)" aria-label="Acercar">+</button><button class="btn" data-c="gz(-1)" aria-label="Alejar">−</button><button class="btn" data-c="gr(-15)" aria-label="Girar a la izquierda">⟲</button><button class="btn" data-c="gr(15)" aria-label="Girar a la derecha">⟳</button><button class="btn" data-c="gf()">Ajustar</button></div></div><div class="small" style="padding:0 24px 4px">Un clic selecciona el nodo; doble clic o «Abrir nota» lo abre. Arrastra un nodo para moverlo y el fondo para desplazar. Rueda o pellizco: zoom. Mayús+arrastrar o dos dedos: girar.</div><div class="small" style="padding:0 24px 12px">Huérfanas (sin enlaces): ${S.notes.filter(n=>!outs(n).length&&!backs(n).length).map(n=>esc(n.title)).join(', ')||'ninguna'}</div>`;
+const svg=$('#gs'),gv=$('#gv'),R0=svg.getBoundingClientRect(),W=R0.width||800,H=R0.height||520;svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e};
+const P=N.map((n,i)=>({n,x:W/2+Math.cos(i*6.28/N.length)*Math.min(W,H)/3,y:H/2+Math.sin(i*6.28/N.length)*Math.min(W,H)/3,vx:0,vy:0,r:6+backs(n).length*2})),ix=Object.fromEntries(P.map(p=>[p.n.title.toLowerCase(),p])),E=[];
+P.forEach(p=>outs(p.n).forEach(l=>{const q=ix[l.toLowerCase()];if(q&&q!==p)E.push([p,q])}));
+const L=E.map(([a,b])=>{const l=mk('line',{'vector-effect':'non-scaling-stroke'});gv.appendChild(l);return[l,a,b]});
+P.forEach((p,i)=>{const g=mk('g',{class:'n'}),c=mk('circle',{r:p.r,fill:`var(${col[p.n.type]})`}),t=mk('text',{y:-p.r-5,'text-anchor':'middle'});if(p.n.id===cur().id){c.setAttribute('stroke','var(--ink)');c.setAttribute('stroke-width',2)}t.textContent=p.n.title;g.append(c,t);g.dataset.i=i;p.g=g;p.t=t;gv.appendChild(g)});
+let al=1,dr=null,hp=null,lt=0,lp=null;
+const draw=()=>{gv.setAttribute('transform',`translate(${W/2+GV.x} ${H/2+GV.y}) rotate(${GV.r}) scale(${GV.k}) translate(${-W/2} ${-H/2})`);L.forEach(([l,a,b])=>{l.setAttribute('x1',a.x);l.setAttribute('y1',a.y);l.setAttribute('x2',b.x);l.setAttribute('y2',b.y)});P.forEach(p=>{p.g.setAttribute('transform',`translate(${p.x} ${p.y})`);p.t.setAttribute('transform',`rotate(${-GV.r})`)})};
+const step=()=>{for(const a of P)for(const b of P){if(a===b)continue;const dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy)||1,f=2600/(d*d);a.vx+=dx/d*f;a.vy+=dy/d*f}
+for(const[a,b]of E){const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy)||1,f=(d-110)*.02;a.vx+=dx/d*f;a.vy+=dy/d*f;b.vx-=dx/d*f;b.vy-=dy/d*f}
+for(const p of P){if(p===dr){p.vx=p.vy=0;continue}p.vx+=(W/2-p.x)*.004;p.vy+=(H/2-p.y)*.004;p.x+=p.vx*.5*al;p.y+=p.vy*.5*al;p.vx*=.6;p.vy*=.6}al*=.992};
+const tick=()=>{if(!svg.isConnected)return;if(dr)al=Math.max(al,.3);if(al>.02){step()}draw();if(al>.02||dr)GA=requestAnimationFrame(tick)};
+const wake=()=>{al=Math.max(al,.4);cancelAnimationFrame(GA);GA=requestAnimationFrame(tick)};
+const rect=()=>svg.getBoundingClientRect(),u=e=>{const r=rect();return[e.clientX-r.left-W/2,e.clientY-r.top-H/2]};
+const wd=e=>{const[ux,uy]=u(e),a=-GV.r*Math.PI/180,x=(ux-GV.x)/GV.k,y=(uy-GV.y)/GV.k;return[W/2+x*Math.cos(a)-y*Math.sin(a),H/2+x*Math.sin(a)+y*Math.cos(a)]};
+const zoomAt=(ux,uy,f)=>{const k=Math.min(4,Math.max(.25,GV.k*f)),g=k/GV.k;GV.x=ux-g*(ux-GV.x);GV.y=uy-g*(uy-GV.y);GV.k=k;draw()};
+const rotAt=(ux,uy,deg)=>{const a=deg*Math.PI/180,dx=GV.x-ux,dy=GV.y-uy;GV.x=ux+dx*Math.cos(a)-dy*Math.sin(a);GV.y=uy+dx*Math.sin(a)+dy*Math.cos(a);GV.r+=deg;draw()};
+GFN={zoom:f=>zoomAt(0,0,f),rot:d=>rotAt(0,0,d),fit:()=>{GV={x:0,y:0,k:1,r:0};draw()}};
+const hl=p=>{if(p===hp)return;hp=p;const nb=p?new Set([p,...E.filter(x=>x[0]===p||x[1]===p).flat()]):null;P.forEach(q=>q.g.style.opacity=!nb||nb.has(q)?1:.15);L.forEach(([l,a,b])=>l.style.opacity=!p||a===p||b===p?1:.08)};
+const sel=p=>{const t=Date.now();if(lp===p&&t-lt<400){go(p.n.id);return}lt=t;lp=p;S.sel=p.n.id;save();P.forEach(q=>{const c=q.g.firstChild;if(q===p){c.setAttribute('stroke','var(--ink)');c.setAttribute('stroke-width',3)}else c.removeAttribute('stroke')});side();right();const e=$('#gsel');if(e)e.textContent='Seleccionada: '+p.n.title};
+const ptr=new Map();let mode=null,mv=0,d0=1,a0=0;
+svg.onpointerdown=e=>{try{svg.setPointerCapture(e.pointerId)}catch(_){}ptr.set(e.pointerId,[e.clientX,e.clientY]);mv=0;
+if(ptr.size===2){const[A,B]=[...ptr.values()];d0=Math.hypot(A[0]-B[0],A[1]-B[1])||1;a0=Math.atan2(B[1]-A[1],B[0]-A[0]);mode='pinch';dr=null;return}
+const g=e.target.closest('g.n');if(g){dr=P[+g.dataset.i];mode='node'}else mode=e.shiftKey?'rot':'pan'};
+svg.onpointermove=e=>{const o=ptr.get(e.pointerId);if(!o){const g=e.target.closest&&e.target.closest('g.n');hl(g?P[+g.dataset.i]:null);return}
+const dx=e.clientX-o[0],dy=e.clientY-o[1];ptr.set(e.pointerId,[e.clientX,e.clientY]);mv+=Math.abs(dx)+Math.abs(dy);
+if(mode==='pinch'&&ptr.size===2){const[A,B]=[...ptr.values()],d=Math.hypot(A[0]-B[0],A[1]-B[1])||1,a=Math.atan2(B[1]-A[1],B[0]-A[0]),r=rect(),mx=(A[0]+B[0])/2-r.left-W/2,my=(A[1]+B[1])/2-r.top-H/2;zoomAt(mx,my,d/d0);rotAt(mx,my,(a-a0)*180/Math.PI);d0=d;a0=a}
+else if(mode==='node'&&dr&&mv>3){const w=wd(e);dr.x=w[0];dr.y=w[1];wake()}
+else if(mode==='rot')rotAt(0,0,dx*.4);else if(mode==='pan'){GV.x+=dx;GV.y+=dy;draw()}};
+svg.onpointerup=svg.onpointercancel=e=>{ptr.delete(e.pointerId);if(mode==='node'&&dr&&mv<5&&e.type==='pointerup'){const p=dr;dr=null;mode=null;sel(p);return}
+if(!ptr.size){dr=null;mode=null}else if(ptr.size<2&&mode==='pinch')mode='pan'};
+svg.onpointerleave=()=>hl(null);
+svg.onwheel=e=>{e.preventDefault();const[ux,uy]=u(e);if(e.shiftKey)rotAt(ux,uy,e.deltaY*.1);else zoomAt(ux,uy,Math.exp(-e.deltaY*.0015))};
+for(let i=0;i<200;i++){al=1;step()}al=.3;draw();wake()}
+let SMP,AIR='',AIS={t:'ideas',x:'',c1:true,c2:true};
+const AIT={ideas:['Ideas para la historia','Propón 8 ideas concretas y originales (giros, escenas, conflictos) coherentes con el material.'],
+titulos:['Sugerencias de títulos','Sugiere 12 títulos posibles (para la novela, el capítulo o la escena indicados), de estilos variados, con una línea de justificación cada uno.'],
+personajes:['Personajes','Propón 5 personajes nuevos que encajen, cada uno con nombre, rasgos, motivación y función en la trama.'],
+descripciones:['Descripciones','Escribe 3 descripciones literarias breves (personaje, objeto o ambiente) según lo indicado, con estilos distintos.'],
+lugares:['Lugares y ambientes','Propón 5 lugares con atmósfera, detalles sensoriales y posible uso dramático.'],
+esquema:['Esquema del relato','Propón un esquema del relato en capítulos y escenas, con una línea por escena y el conflicto de cada capítulo.'],
+continuar:['Continuar el texto','Continúa la nota actual con unas 200 palabras, manteniendo voz, tono y tiempo verbal.'],
+mejorar:['Mejorar el estilo','Reescribe la nota actual mejorando ritmo y claridad sin cambiar el contenido; después lista 3 cambios.'],
+dialogo:['Diálogo','Escribe un diálogo breve entre los personajes indicados, con subtexto y voz propia para cada uno.'],
+giros:['Giros y obstáculos','Propón 6 giros argumentales u obstáculos para el protagonista, ordenados de menor a mayor impacto.']};
+async function smp(){if(SMP!==undefined)return SMP;try{SMP=window.claude&&claude.use?await claude.use('sample'):null}catch(e){SMP=null}return SMP}
+function aiPrompt(){const n=cur(),nov=S.notes.map(m=>`- [${TY[m.type]}] ${m.title}: ${(m.syn||m.text).replace(/\s+/g,' ').slice(0,220)}${Object.entries(m.f||{}).filter(x=>x[1]).map(x=>` (${x[0]}: ${x[1]})`).join('')}`).join('\n').slice(0,6000);
+return `Eres un asistente literario para un autor que escribe una novela en español. Responde siempre en español, con propuestas concretas y bien organizadas. No inventes datos que contradigan el material.\n\nTarea: ${AIT[AIS.t][1]}\n`+(AIS.c2?`\nResumen de la novela (fichas y escenas):\n${nov}\n`:'')+(AIS.c1?`\nNota actual «${n.title}»:\n${n.text.replace(/\{\{.+?\}\}/g,'').slice(0,6000)||'(vacía)'}\n`:'')+(AIS.x?`\nIndicaciones del autor: ${AIS.x}\n`:'')}
+async function aiGo(){const o=$('#ao'),s=await smp();if(!o)return;if(!s){o.textContent='Esta copia no tiene conexión con Claude. Usa «Copiar petición» y pégala en una conversación con Claude.';return}
+o.textContent='Pensando…';try{const r=await s(aiPrompt(),{cache:false,onText:x=>{AIR=x.text;o.textContent=x.text}});AIR=r.text;o.textContent=r.text}catch(e){o.textContent=e&&e.code==='not_granted'?'No has dado permiso a la página para usar Claude.':e&&e.code==='rate_limited'?'Demasiadas peticiones seguidas. Espera un momento.':'No se pudo generar: '+((e&&e.message)||e)}}
+function aiCopy(){copy(aiPrompt());const e=$('#as');if(e)e.textContent='Petición copiada: pégala en Claude.'}
+function aiIns(){const n=cur();if(!AIR)return;snap(n,1);n.text+=(n.text?'\n\n':'')+AIR;S.view='write';render();save()}
+function aiNew(){const t=($('#an').value||'').trim();if(!AIR||!t||find(t))return;const n=mk($('#aty').value,t,cur().chapter);n.text=AIR;go(n.id)}
+function gopen(){go(cur().id)}
+function aiView(st){const n=cur();
+st.innerHTML=`<div class="meta"><span class="title" style="font-size:20px">Asistente literario</span><span class="small" id="as"></span></div><div class="page"><label class="fld">¿Qué necesitas?<select id="at">${Object.entries(AIT).map(([k,v])=>`<option value="${k}"${AIS.t===k?' selected':''}>${v[0]}</option>`).join('')}</select></label>
+<label class="row small"><input type="checkbox" id="a1" ${AIS.c1?'checked':''}> Usar la nota actual («${esc(n.title)}»)</label><label class="row small"><input type="checkbox" id="a2" ${AIS.c2?'checked':''}> Usar el resumen de la novela (fichas y escenas)</label>
+<label class="fld">Indicaciones (opcional)<textarea id="ax" rows="3" style="border:1px solid var(--line);background:var(--bg);border-radius:5px;padding:6px" placeholder="Por ejemplo: tono más oscuro, para el capítulo 2…">${esc(AIS.x)}</textarea></label>
+<div class="row" style="margin-top:8px"><button class="btn" data-c="aiGo()">Generar</button><button class="btn" data-c="aiCopy()">Copiar petición</button></div>
+<h4>Resultado</h4><div id="ao" class="pv" style="white-space:pre-wrap">${esc(AIR)||'<span class="small">Aquí aparecerá la respuesta.</span>'}</div>
+<div class="row" style="flex-wrap:wrap;margin-top:10px"><button class="btn" data-c="aiIns()">Añadir a la nota actual</button><input id="an" placeholder="Título de la nota nueva" style="flex:1;min-width:140px"><select id="aty" aria-label="Tipo de nota">${Object.entries(TY).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><button class="btn" data-c="aiNew()">Crear nota</button></div></div>`;
+$('#at').onchange=e=>{AIS.t=e.target.value};$('#a1').onchange=e=>{AIS.c1=e.target.checked};$('#a2').onchange=e=>{AIS.c2=e.target.checked};$('#ax').oninput=e=>{AIS.x=e.target.value};
+smp().then(s=>{const e=$('#as');if(e&&!e.textContent)e.textContent=s?'Conectado con Claude':'Sin conexión con Claude en esta copia: usa «Copiar petición»'})}
+const OD={busy:0,msg:'',tm:0,quiet:0};
+const ODB='https://graph.microsoft.com/v1.0/me/drive/special/approot',ODA='https://login.microsoftonline.com/common/oauth2/v2.0/',ODS='Files.ReadWrite.AppFolder offline_access';
+const odCid=()=>localStorage.getItem('mg_cid')||'',odRed=()=>location.origin+location.pathname,odOk=()=>location.protocol==='https:';
+const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const hs=s=>{let x=5381;for(let i=0;i<s.length;i++)x=(x*33^s.charCodeAt(i))|0;return x};
+const FM=['title','id','type','chapter','status','goal','syn','tags','pov','date','f'],FK={title:'titulo',id:'id',type:'tipo',chapter:'capitulo',status:'estado',goal:'objetivo',syn:'sinopsis',tags:'etiquetas',pov:'pov',date:'fecha',f:'campos'};
+const ser=n=>'---\nmarginalia: 1\n'+FM.map(k=>FK[k]+': '+JSON.stringify(n[k]===undefined?(k==='tags'?[]:k==='f'?{}:k==='goal'?0:''):n[k])).join('\n')+'\n---\n\n'+n.text;
+function par(t,name){const m=/^---\n([\s\S]*?)\n---\n\n?([\s\S]*)$/.exec(t.replace(/\r\n/g,'\n')),o={title:name.replace(/\.md$/i,''),text:t,type:'note'};if(!m)return o;o.text=m[2];m[1].split('\n').forEach(l=>{const x=/^(\w+): (.*)$/.exec(l);if(!x)return;const k=Object.keys(FK).find(a=>FK[a]===x[1]);if(k)try{o[k]=JSON.parse(x[2])}catch(e){}});return o}
+const apply=(n,o)=>{FM.forEach(k=>{if(k!=='id'&&o[k]!==undefined)n[k]=o[k]});n.text=o.text;n.tags=n.tags||[];n.f=n.f||{}};
+const mix=(n,o)=>{const c={...n};FM.forEach(k=>{if(o[k]!==undefined)c[k]=o[k]});c.text=o.text;c.id=n.id;return c};
+const nm=t=>(t.replace(/[\\/:*?"<>|#%]/g,'_').replace(/[. ]+$/,'').trim()||'Sin título')+'.md';
+function odMsg(t){OD.msg=t;['#odm','#odh'].forEach(s=>{const e=$(s);if(e)e.textContent=t})}
+async function odLogin(){const cid=($('#odc').value||'').trim();if(!cid)return;localStorage.setItem('mg_cid',cid);
+const v=b64(crypto.getRandomValues(new Uint8Array(32))),st=b64(crypto.getRandomValues(new Uint8Array(12))),ch=b64(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)));
+localStorage.setItem('mg_pk',JSON.stringify({v,st}));
+location.href=ODA+'authorize?'+new URLSearchParams({client_id:cid,response_type:'code',redirect_uri:odRed(),response_mode:'query',scope:ODS,state:st,code_challenge:ch,code_challenge_method:'S256'})}
+async function odTokReq(p){const r=await fetch(ODA+'token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({client_id:odCid(),scope:ODS,...p})}),j=await r.json();if(!r.ok)throw new Error(j.error_description||j.error||r.status);
+let old={};try{old=JSON.parse(localStorage.getItem('mg_au')||'{}')}catch(e){}const a={at:j.access_token,rt:j.refresh_token||old.rt,exp:Date.now()+(j.expires_in-120)*1000};localStorage.setItem('mg_au',JSON.stringify(a));return a}
+async function odTok(){let a=null;try{a=JSON.parse(localStorage.getItem('mg_au')||'null')}catch(e){}if(!a)return null;if(Date.now()<a.exp)return a.at;try{return(await odTokReq({grant_type:'refresh_token',refresh_token:a.rt})).at}catch(e){localStorage.removeItem('mg_au');return null}}
+async function odBack(){const q=new URLSearchParams(location.search);if(!q.get('code')&&!q.get('error'))return false;let pk=null;try{pk=JSON.parse(localStorage.getItem('mg_pk'))}catch(e){}history.replaceState(null,'',location.pathname);localStorage.removeItem('mg_pk');
+if(q.get('error')){odMsg('Microsoft rechazó el acceso: '+(q.get('error_description')||q.get('error')));return true}
+if(!pk||pk.st!==q.get('state')){odMsg('Respuesta de inicio de sesión no válida.');return true}
+try{await odTokReq({grant_type:'authorization_code',code:q.get('code'),redirect_uri:odRed(),code_verifier:pk.v});odMsg('Conectado con OneDrive.')}catch(e){odMsg('No se pudo conectar: '+e.message)}return true}
+async function gx(path,o={}){const t=await odTok();if(!t)throw new Error('sesión caducada; vuelve a conectar.');const r=await fetch(path.startsWith('http')?path:ODB+path,{...o,headers:{Authorization:'Bearer '+t,...(o.headers||{})}});if(!r.ok&&r.status!==404)throw new Error('OneDrive respondió '+r.status);return r}
+const enc=s=>':/'+encodeURIComponent(s)+':';
+async function odList(){let u='/children?$top=200&$select=name,eTag,file',out=[];while(u){const r=await gx(u);if(r.status===404)return out;const j=await r.json();out.push(...j.value.filter(x=>x.file));u=j['@odata.nextLink']||''}return out}
+const odGet=async n=>(await gx(enc(n)+'/content')).text();
+async function odPut(n,t){const r=await gx(enc(n)+'/content',{method:'PUT',headers:{'Content-Type':'text/plain; charset=utf-8'},body:t});return(await r.json()).eTag}
+const odDel=n=>gx(enc(n),{method:'DELETE'});
+const ordIds=()=>S.notes.map(n=>n.id).join();
+async function odSync(manual){if(OD.busy)return;OD.busy=1;odMsg('Sincronizando…');let up=0,dn=0,cf=0;
+try{if(!(await odTok()))throw new Error('sesión caducada; vuelve a conectar.');
+const rem=(await odList()).filter(x=>/\.md$/i.test(x.name)),by=Object.fromEntries(rem.map(x=>[x.name,x])),F=S.od.force,lo0=hs(ordIds()),typing=document.activeElement&&document.activeElement.id==='ed';
+for(const t of S.trash.filter(t=>t.sf)){if(by[t.sf]){await odDel(t.sf);delete by[t.sf]}t.sf=null;t.se=null}
+for(const n of [...S.notes]){let body=ser(n),h=hs(body),fn=nm(n.title);const r=n.sf&&by[n.sf];
+if(n.sf&&!r){if(h===n.sh){n.sf=null;S.trash.push(n);S.notes=S.notes.filter(x=>x!==n);dn++;continue}n.sf=null;n.se=null}
+if(r&&r.eTag!==n.se){if(!manual&&typing&&n===cur())continue;const o=par(await odGet(r.name),r.name);
+if(h===n.sh){apply(n,o);n.sf=r.name;n.se=r.eTag;n.sh=hs(ser(n));dn++;continue}
+if(hs(ser(mix(n,o)))===h){n.se=r.eTag;n.sh=h;continue}
+cf++;const c=mk('note',n.title+' (copia local, conflicto)');c.text=n.text;c.tags=[...n.tags];apply(n,o);n.sf=r.name;n.se=r.eTag;n.sh=hs(ser(n));dn++;continue}
+if(!n.sf&&by[fn]&&!F){const o=par(await odGet(fn),fn);if(hs(ser(mix(n,o)))===h){n.sf=fn;n.se=by[fn].eTag;n.sh=h;continue}n.title+=' (de este equipo)';fn=nm(n.title);body=ser(n);h=hs(body)}
+if(h!==n.sh||!n.sf){const old=n.sf;n.se=await odPut(fn,body);n.sf=fn;n.sh=h;if(old&&old!==fn)await odDel(old);up++}}
+for(const r of rem){if(!by[r.name]||S.notes.some(n=>n.sf===r.name)||S.trash.some(t=>t.sf===r.name))continue;const o=par(await odGet(r.name),r.name);let t=o.title;if(find(t))t+=' (OneDrive)';const n=mk(o.type||'note',t);apply(n,o);n.title=t;if(o.id&&!S.notes.some(x=>x.id===o.id))n.id=o.id;n.sf=r.name;n.se=r.eTag;n.sh=hs(ser(n));dn++}
+let rm=null;const mr=await gx(enc('_marginalia.json')+'/content');if(mr.ok){try{rm=JSON.parse(await mr.text())}catch(e){}}
+if(rm&&rm.order&&hs(rm.order.join())!==S.od.oh&&lo0===S.od.oh){const ix=Object.fromEntries(rm.order.map((id,i)=>[id,i]));S.notes.sort((a,b)=>(ix[a.id]??9999)-(ix[b.id]??9999))}
+else if(!rm||!rm.order||hs(rm.order.join())!==hs(ordIds()))await odPut('_marginalia.json',JSON.stringify({order:S.notes.map(n=>n.id)}));
+S.od.oh=hs(ordIds());S.od.force=false;if(!S.notes.find(n=>n.id===S.sel))S.sel=S.notes[0]&&S.notes[0].id;
+OD.quiet=1;save();if(dn||cf)render();odMsg('Sincronizado '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})+' · ↑'+up+' ↓'+dn+(cf?' · '+cf+' conflicto(s): revisa las notas «copia local»':''))}
+catch(e){if(!S.notes.length&&S.snaps.length){S.notes=JSON.parse(S.snaps[S.snaps.length-1].d);S.sel=S.notes[0].id}OD.quiet=1;save();render();odMsg('Error de sincronización: '+e.message)}
+finally{OD.busy=0;odUi()}}
+async function odFirst(m){if(OD.busy)return;try{const rem=(await odList()).filter(x=>/\.md$/i.test(x.name));
+if(m==='down'){if(!rem.length){odMsg('No hay notas en OneDrive todavía: usa «Subir lo de este equipo».');odUi();return}S.snaps.push({t:Date.now(),name:'Antes de traer de OneDrive',d:JSON.stringify(S.notes)});if(S.snaps.length>8)S.snaps.shift();S.notes=[];S.trash=[];S.od={done:true,oh:hs('')}}
+else{S.notes.concat(S.trash).forEach(n=>{n.sf=null;n.se=null;n.sh=null});S.od={done:true,oh:null,force:true}}}
+catch(e){odMsg('Error: '+e.message);odUi();return}
+await odSync(1)}
+function odOut(){localStorage.removeItem('mg_au');S.od={done:false,oh:null};odMsg('Desconectado de OneDrive.');odUi();save()}
+function odSoon(){if(OD.quiet){OD.quiet=0;return}if(!S.od||!S.od.done||!localStorage.getItem('mg_au'))return;clearTimeout(OD.tm);OD.tm=setTimeout(()=>odSync(),8000)}
+function odUi(){const e=$('#odu');if(!e)return;const tk=!!localStorage.getItem('mg_au');let h='<h4>OneDrive</h4>';
+if(!odOk())h+='<p class="small">La sincronización con OneDrive necesita abrir Marginalia desde una dirección web (por ejemplo, GitHub Pages), no desde un archivo local.</p>';
+else if(!tk)h+=`<p class="small">Dirección de redirección que debes registrar en Azure: <b>${esc(odRed())}</b></p><div class="row"><input id="odc" placeholder="Identificador de aplicación (cliente)" value="${esc(odCid())}" style="flex:1" aria-label="Identificador de cliente"><button class="btn" data-c="odLogin()">Conectar</button></div>`;
+else if(!S.od.done)h+='<p class="small">Conectado. ¿Qué hay en este equipo?</p><div class="row"><button class="btn" data-c="odFirst(\'up\')">Subir lo de este equipo</button><button class="btn" data-c="odFirst(\'down\')">Traer lo de OneDrive</button></div><p class="small">«Traer» sustituye lo de este equipo (antes se guarda una instantánea). «Subir» sobrescribe en OneDrive las notas con el mismo título.</p>';
+else h+='<div class="row"><button class="btn" data-c="odSync(1)">Sincronizar ahora</button><button class="btn" data-c="odOut()">Desconectar</button></div>';
+e.innerHTML=h+'<div class="small" id="odm">'+esc(OD.msg)+'</div>'}
+function book(st){const sc=S.notes.filter(n=>n.type==='scene'),chs=[...new Set(sc.map(n=>n.chapter))],tot=sc.reduce((a,n)=>a+words(n.text),0),goal=sc.reduce((a,n)=>a+(n.goal||0),0);
+const txt=chs.map(ch=>'## '+ch+'\n\n'+sc.filter(n=>n.chapter===ch).map(n=>n.text.replace(/\{\{.+?\}\}/g,'').replace(LINK,(m,x)=>{const p=x.split('|');return p[1]||p[0]})).join('\n\n* * *\n\n')).join('\n\n');
+st.innerHTML=`<div class="meta"><span class="title" style="font-size:20px">Manuscrito</span><span class="small">${tot} palabras${goal?` de ${goal}`:''} · ${sc.length} escenas</span><button class="btn" id="cp">Copiar manuscrito</button></div><div class="page"><div class="small" style="margin-bottom:14px">${sc.map(n=>`${esc(n.title)}: ${n.status}`).join(' · ')}</div><div class="book">${esc(txt)}</div></div>`;$('#cp').onclick=()=>copy(txt)}
+function copy(t){try{navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove()}}
+function render(){document.body.classList.toggle('focus',!!S.focus);$('#mn').dataset.p=S.pane;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.v===S.view));document.querySelectorAll('#mnav button').forEach(b=>b.classList.toggle('on',b.dataset.p===S.pane));side();right();stage()}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.view=b.dataset.v;S.pane='stage';render()});
+document.querySelectorAll('#mnav button').forEach(b=>b.onclick=()=>{S.pane=b.dataset.p;render()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.focus)foco()});
+$('#th').onclick=()=>{const r=document.documentElement,d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);S.theme=d?'light':'dark';r.dataset.theme=S.theme;save()};
+$('#sync').onclick=()=>{$('#dt').value=JSON.stringify(S);odUi();$('#dlg').showModal()};$('#dx').onclick=()=>$('#dlg').close();$('#dc').onclick=()=>{$('#dt').select();copy($('#dt').value);S.bk=Date.now();save()};
+$('#di').onclick=()=>{try{const d=JSON.parse($('#dt').value);if(!Array.isArray(d.notes))throw 0;S=norm(d);render();save();$('#dlg').close()}catch(e){$('#dt').value='No se pudo importar: pega aquí una copia generada por Marginalia.'}};
+const FN={odLogin,odFirst,odSync,odOut,gopen,aiGo,aiCopy,aiIns,aiNew,gz,gr,gf,go,wrap,addN,mv,del,addC,tpl,stag,rest,empt,repl,pick,foco,pal,palG,spr,rv,snapAll,snapR,leer,openT};
+function run(s){const m=/^(\w+)\((.*)\)$/s.exec(s.trim());if(!m||!FN[m[1]])return;const a=[...m[2].matchAll(/'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"|(-?\d+)/g)].map(x=>x[1]!==undefined?x[1]:x[2]!==undefined?x[2]:+x[3]);FN[m[1]](...a)}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-c]');if(t)run(t.dataset.c)});
+document.addEventListener('mousedown',e=>{const t=e.target.closest('[data-pick]');if(t){e.preventDefault();pick(+t.dataset.pick)}});
+document.addEventListener('dragstart',e=>{const t=e.target.closest('[data-drag]');if(t){DR=t.dataset.drag;try{e.dataTransfer.setData('text/plain',DR)}catch(_){}}});
+document.addEventListener('dragover',e=>{if(e.target.closest('[data-drop],[data-dropch]'))e.preventDefault()});
+document.addEventListener('drop',e=>{const c=e.target.closest('[data-drop]');if(c){e.preventDefault();e.stopPropagation();mvTo(c.dataset.drop);return}const g=e.target.closest('[data-dropch]');if(g){e.preventDefault();dropCh(+g.dataset.dropch)}});
+document.addEventListener('change',e=>{const k=e.target.dataset.ch;if(!k)return;const v=e.target.type==='checkbox'?e.target.checked:e.target.value;
+if(k==='bt'){S.bt=v;board($('#stage'))}else if(k==='gt'){S.gt=v;stage()}else if(k==='gl'){S.gl=v;stage()}else if(k==='dg'){S.dg=+v||0;right();save()}else if(k==='ff'){S.ff=v;typo();save()}else if(k==='fs'){S.fs=+v||17;typo();save()}else if(k==='fw'){S.fw=+v||720;typo();save()}});
+render();
+odBack().then(()=>{if(S.od.done&&localStorage.getItem('mg_au'))odSync();else if(localStorage.getItem('mg_au')&&OD.msg)$('#sync').click()});
+setInterval(()=>{if(!document.hidden&&S.od.done&&localStorage.getItem('mg_au'))odSync()},60000);
+})();
+</script></body></html>
