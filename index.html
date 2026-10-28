@@ -74,6 +74,10 @@ main[data-p="side"] #stage,main[data-p="side"] #right,main[data-p="stage"] #side
 .dropL{box-shadow:-3px 0 0 var(--acc)}.dropR{box-shadow:3px 0 0 var(--acc)}
 h4 .ic{margin-left:6px;vertical-align:middle}
 #chd.warn #chdw{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+.itw{display:flex;align-items:center;gap:3px;border-radius:6px}.itw .it{flex:1;min-width:0}.itw .it>span:first-of-type:not(.dot){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.itw .ic{opacity:.4}.itw:hover .ic,.itw.on .ic,.itw:focus-within .ic{opacity:1}
+[data-dropsec].over{outline:2px dashed var(--acc);outline-offset:-2px;background:var(--accbg)}
+#ntd.warn #ntdw{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px}
+#odl .row{align-items:center}
 </style></head><body><div id="app">
 <header><span class="brand">Marginalia</span><button class="btn" id="nvb" data-c="nvOpen()" aria-label="Mis novelas"></button><button class="btn" data-c="nvOpen('nueva')" title="Crear una novela nueva">+ Novela</button>
 <button class="tab" data-v="write">Escribir</button><button class="tab" data-v="board">Tablero</button><button class="tab" data-v="time">Cronología</button><button class="tab" data-v="mat">Matriz</button><button class="tab" data-v="stat">Estadísticas</button><button class="tab" data-v="graph">Grafo</button><button class="tab" data-v="book">Manuscrito</button><button class="tab" data-v="ai">Asistente</button>
@@ -84,8 +88,12 @@ h4 .ic{margin-left:6px;vertical-align:middle}
 <dialog id="nvd"><h3 style="margin-top:0;font-family:var(--ser)">Mis novelas</h3><div id="nvl"></div>
 <h4>Crear una novela nueva</h4><div class="row"><input id="nvn" placeholder="Nombre de la nueva novela" style="flex:1" aria-label="Nombre de la nueva novela"><button class="btn pri" data-c="nvNew()">Crear y abrir</button></div>
 <h4>En OneDrive</h4><div id="nvo"></div>
-<h4>Esta novela</h4><div class="row"><input id="nvr" style="flex:1" aria-label="Nombre de esta novela"><button class="btn" data-c="nvRen()">Renombrar</button></div><div class="row"><button class="btn" id="nvdb" data-c="nvDel()">Borrar esta novela de este equipo</button></div>
-<p style="display:flex;justify-content:flex-end;margin-bottom:0"><button class="btn" id="nvx">Cerrar</button></p></dialog><dialog id="chd"><h3 id="cht" style="margin-top:0;font-family:var(--ser)">Capítulo</h3><div class="row"><input id="chn" style="flex:1" placeholder="Nombre del capítulo" aria-label="Nombre del capítulo"><button class="btn pri" data-c="chSave()">Guardar</button></div>
+<h4>Cambiar el nombre de la novela abierta</h4><div class="row"><input id="nvr" style="flex:1" aria-label="Nombre de esta novela"><button class="btn" data-c="nvRen()">Renombrar</button></div>
+<p style="display:flex;justify-content:flex-end;margin-bottom:0"><button class="btn" id="nvx">Cerrar</button></p></dialog><dialog id="ntd"><h3 id="ntt" style="margin-top:0;font-family:var(--ser)">Nota</h3><div class="row"><input id="ntn" style="flex:1" placeholder="Nombre" aria-label="Nombre"><button class="btn pri" data-c="ntSave()">Guardar</button></div>
+<div id="nts" class="small" style="margin-top:6px">Al cambiar el nombre se actualizan los enlaces [[…]] de las demás notas.</div>
+<div id="ntdw" style="margin-top:14px"><h4 style="margin-top:0">Eliminar</h4><div class="small" id="ntdi"></div><div class="row"><button class="btn" id="ntdel" data-c="ntDel()">Eliminar</button></div></div>
+<div class="small" id="ntm" style="margin-top:8px;color:var(--acc)"></div><p style="display:flex;justify-content:flex-end;margin-bottom:0"><button class="btn" id="ntx">Cancelar</button></p></dialog>
+<dialog id="ndd"><h3 id="ndt" style="margin-top:0;font-family:var(--ser)">Eliminar novela</h3><p class="small" id="ndi"></p><div class="row"><button class="btn" id="ndl" data-c="ndGo('loc')">Quitar de este equipo</button></div><div class="row"><button class="btn" id="ndo" data-c="ndGo('both')">Eliminar también de OneDrive</button></div><div class="small" id="ndm" style="margin-top:8px;color:var(--acc)"></div><p style="display:flex;justify-content:flex-end;margin-bottom:0"><button class="btn" id="ndx">Cancelar</button></p></dialog><dialog id="chd"><h3 id="cht" style="margin-top:0;font-family:var(--ser)">Capítulo</h3><div class="row"><input id="chn" style="flex:1" placeholder="Nombre del capítulo" aria-label="Nombre del capítulo"><button class="btn pri" data-c="chSave()">Guardar</button></div>
 <div id="chs" class="small" style="margin-top:6px">Al cambiar el nombre se actualiza en todas las escenas del capítulo.</div>
 <div id="chdw" style="margin-top:14px"><h4 style="margin-top:0">Eliminar este capítulo</h4><div class="small" id="chdi"></div><div class="row"><button class="btn" id="chdel" data-c="chDel()">Eliminar capítulo</button></div></div>
 <div class="small" id="chm" style="margin-top:8px;color:var(--acc)"></div><p style="display:flex;justify-content:flex-end;margin-bottom:0"><button class="btn" id="chx">Cancelar</button></p></dialog><dialog id="exd"><h3 style="margin-top:0;font-family:var(--ser)">Exportar la novela</h3><p class="small">Se exportan las escenas agrupadas por capítulos y en el orden del Tablero. Los comentarios {{…}} no se incluyen.</p><div class="row"><input id="exa" data-ch="au" placeholder="Autor (portada y metadatos)" style="flex:1" aria-label="Autor"></div><div class="exg"><button class="btn pri" data-c="expo('docx')">Word (.docx)</button><button class="btn pri" data-c="expo('pdf')">PDF</button><button class="btn pri" data-c="expo('epub')">EPUB</button></div><div class="small exm"></div><p style="display:flex;justify-content:flex-end;margin-bottom:0"><button class="btn" id="exx">Cerrar</button></p></dialog><dialog id="pal"><input id="pi" placeholder="Ir a una nota o vista…" style="width:100%" aria-label="Ir a"><div id="pl"></div><p class="small">Pulsa Enter para abrir el primer resultado. Atajo: Ctrl+K.</p></dialog><dialog id="dlg"><h3 style="margin-top:0;font-family:var(--ser)">Copia y sincronizar</h3>
@@ -128,14 +136,16 @@ function go(id){S.sel=id;S.view='write';S.pane='stage';render();save()}
 function mk(type,title,ch){const n={id:uid(),type,title,text:{char:'Relaciones:\n\nSecretos:\n',place:'Descripción:\n'}[type]||'',chapter:type==='scene'?(ch||'Capítulo 1'):'',status:'Borrador',goal:0,syn:'',f:{},tags:[],h:[],date:''};S.notes.push(n);return n}
 function openT(t){go((find(t)||mk('note',t.trim())).id)}
 const chs=()=>[...new Set(S.notes.filter(n=>n.type==='scene').map(n=>n.chapter))];
-function mvTo(did,tid,after){const d=S.notes.find(n=>n.id===did),t=S.notes.find(n=>n.id===tid);if(!d||!t||d===t||d.type!=='scene'||t.type!=='scene')return;S.notes=S.notes.filter(n=>n!==d);d.chapter=t.chapter;S.notes.splice(S.notes.indexOf(t)+(after?1:0),0,d);render();save()}
+function mvTo(did,tid,after){const d=S.notes.find(n=>n.id===did),t=S.notes.find(n=>n.id===tid);if(!d||!t||d===t||d.type!==t.type)return;S.notes=S.notes.filter(n=>n!==d);if(d.type==='scene')d.chapter=t.chapter;S.notes.splice(S.notes.indexOf(t)+(after?1:0),0,d);render();save()}
 function dropCh(did,i){const d=S.notes.find(n=>n.id===did),ch=chs()[i];if(!d||d.type!=='scene'||ch===undefined)return;S.notes=S.notes.filter(n=>n!==d);d.chapter=ch;let k=-1;S.notes.forEach((n,j)=>{if(n.type==='scene'&&n.chapter===ch)k=j});k<0?S.notes.push(d):S.notes.splice(k+1,0,d);render();save()}
+
+function dropSec(did,ty){const d=S.notes.find(n=>n.id===did);if(!d||d.type!==ty)return;S.notes=S.notes.filter(n=>n!==d);let k=-1;S.notes.forEach((n,j)=>{if(n.type===ty)k=j});k<0?S.notes.push(d):S.notes.splice(k+1,0,d);render();save()}
 function stag(t){S.tag=S.tag===t?'':t;side()}
 function lst(){const c=cur(),q=S.q.toLowerCase(),f=n=>(!q||(n.title+' '+n.text+' '+n.tags.join(' ')).toLowerCase().includes(q))&&(!S.tag||n.tags.includes(S.tag));
-const row=n=>`<button class="it ${n.type} ${n.id===c.id?'on':''}" data-drag="${n.id}" data-drop="${n.id}" data-c="go('${n.id}')"><span class="dot"></span>${esc(n.title)}</button>`;let h='';
+const row=n=>`<div class="itw ${n.id===c.id?'on':''}" data-drag="${n.id}" data-drop="${n.id}"><button class="it ${n.type} ${n.id===c.id?'on':''}" data-c="go('${n.id}')"><span class="dot"></span><span>${esc(n.title)}</span></button><button class="ic" data-c="ntOpen('${n.id}')" title="Renombrar" aria-label="Renombrar «${esc(n.title)}»">✎</button><button class="ic" data-c="ntOpen('${n.id}',1)" title="Eliminar" aria-label="Eliminar «${esc(n.title)}»">✕</button></div>`;let h='';
 if(q||S.tag)h='<h4>Resultados</h4>'+(S.notes.filter(f).map(row).join('')||'<div class="small">Sin resultados.</div>');
 else{const sc=S.notes.filter(n=>n.type==='scene');CH=[...new Set(sc.map(n=>n.chapter))];h='<h4>Novela<button class="ic" data-c="chOpen(-1)" title="Añadir un capítulo nuevo" aria-label="Nuevo capítulo">＋ Capítulo</button></h4>'+CH.map((ch,i)=>`<div class="chb" data-dropch="${i}"><div class="chl small" data-dragch="${i}" title="Arrastra para mover el capítulo"><span class="chn">${esc(ch)||'(sin capítulo)'}</span>${chBtns(i)}</div>`+sc.filter(n=>n.chapter===ch).map(row).join('')+'</div>').join('');
-for(const t of['char','place','note']){const l=S.notes.filter(n=>n.type===t);if(l.length)h+=`<h4>${PLU[t]}</h4>`+l.map(row).join('')}}
+for(const t of['char','place','note']){const l=S.notes.filter(n=>n.type===t);h+=`<div data-dropsec="${t}"><h4>${PLU[t]}<button class="ic" data-c="ntNew('${t}')" title="Añadir ${TY[t].toLowerCase()}" aria-label="Añadir ${TY[t].toLowerCase()}">＋</button></h4>`+(l.length?l.map(row).join(''):'<div class="small">Vacío</div>')+'</div>'}}
 $('#lst').innerHTML=h}
 function side(){const tg=[...new Set(S.notes.flatMap(n=>n.tags))].sort();
 $('#side').innerHTML=`<input id="q" type="search" placeholder="Buscar en todo" value="${esc(S.q)}" style="width:100%" aria-label="Buscar"><div class="row"><input id="rp" placeholder="Reemplazar por" value="${esc(S.rp)}" style="flex:1;min-width:0" aria-label="Reemplazar por"><button class="chip" data-c="repl()">Reemplazar todo</button></div>`+(tg.length?`<div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap">${tg.map(t=>`<button class="chip ${S.tag===t?'on':''}" data-c="stag('${t}')">#${esc(t)}</button>`).join('')}</div>`:'')+`<div id="lst"></div>${S.trash.length?`<h4>Papelera</h4>${S.trash.map((t,i)=>`<div class="row"><span class="small" style="flex:1">${esc(t.title)}</span><button class="chip" data-c="rest(${i})">Restaurar</button></div>`).join('')}<button class="chip" data-c="empt()">Vaciar papelera</button>`:''}<div class="add"><input id="nt" placeholder="Título nuevo" aria-label="Título nuevo"><select id="nty">${Object.entries(TY).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div><button class="btn" style="margin-top:6px;width:100%" data-c="addN()">Crear</button>`;
@@ -294,7 +304,8 @@ $('#at').onchange=e=>{AIS.t=e.target.value};$('#a1').onchange=e=>{AIS.c1=e.targe
 aiSt()}
 const OD={busy:0,msg:'',tm:0,quiet:0};
 const ODB='https://graph.microsoft.com/v1.0/me/drive/special/approot',ODA='https://login.microsoftonline.com/common/oauth2/v2.0/',ODS='Files.ReadWrite.AppFolder offline_access';
-const odCid=()=>localStorage.getItem('mg_cid')||'',odRed=()=>location.origin+location.pathname,odOk=()=>location.protocol==='https:';
+const CID0=/*CID*/'';
+const odCid=()=>localStorage.getItem('mg_cid')||CID0,odRed=()=>location.origin+location.pathname,odOk=()=>location.protocol==='https:';
 const b64=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const hs=s=>{let x=5381;for(let i=0;i<s.length;i++)x=(x*33^s.charCodeAt(i))|0;return x};
 const FM=['title','id','type','chapter','status','goal','syn','tags','pov','date','f'],FK={title:'titulo',id:'id',type:'tipo',chapter:'capitulo',status:'estado',goal:'objetivo',syn:'sinopsis',tags:'etiquetas',pov:'pov',date:'fecha',f:'campos'};
@@ -304,7 +315,7 @@ const apply=(n,o)=>{FM.forEach(k=>{if(k!=='id'&&o[k]!==undefined)n[k]=o[k]});n.t
 const mix=(n,o)=>{const c={...n};FM.forEach(k=>{if(o[k]!==undefined)c[k]=o[k]});c.text=o.text;c.id=n.id;return c};
 const nm=t=>(t.replace(/[\\/:*?"<>|#%]/g,'_').replace(/[. ]+$/,'').trim()||'Sin título')+'.md';
 function odMsg(t){OD.msg=t;['#odm','#odh'].forEach(s=>{const e=$(s);if(e){e.textContent=t;e.title=t}});if(/^(Error|No se pudo|Microsoft|Respuesta|Conectado con|Desconectado)/.test(t))toast(t)}
-async function odLogin(){const cid=($('#odc').value||'').trim();if(!cid)return;localStorage.setItem('mg_cid',cid);
+async function odLogin(){const ci=$('#odc'),cid=((ci&&ci.value)||odCid()).trim();if(!cid)return;if(ci&&cid!==CID0)localStorage.setItem('mg_cid',cid);
 const v=b64(crypto.getRandomValues(new Uint8Array(32))),st=b64(crypto.getRandomValues(new Uint8Array(12))),ch=b64(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v)));
 localStorage.setItem('mg_pk',JSON.stringify({v,st}));
 location.href=ODA+'authorize?'+new URLSearchParams({client_id:cid,response_type:'code',redirect_uri:odRed(),response_mode:'query',scope:ODS,state:st,code_challenge:ch,code_challenge_method:'S256'})}
@@ -351,10 +362,12 @@ function odOut(){localStorage.removeItem('mg_au');S.od={done:false,oh:null};odMs
 function odSoon(){if(OD.quiet){OD.quiet=0;return}if(!S.od||!S.od.done||!localStorage.getItem('mg_au'))return;clearTimeout(OD.tm);OD.tm=setTimeout(()=>odSync(),8000)}
 function odUi(){const e=$('#odu');if(!e)return;const tk=!!localStorage.getItem('mg_au');let h='<h4>OneDrive</h4>';
 if(!odOk())h+='<p class="small">La sincronización con OneDrive necesita abrir Marginalia desde una dirección web (por ejemplo, GitHub Pages), no desde un archivo local.</p>';
+else if(!tk&&CID0)h+=`<p class="small">Pulsa «Conectar» e inicia sesión con tu cuenta de Microsoft. Solo hace falta una vez en cada navegador.</p><div class="row"><button class="btn pri" data-c="odLogin()">Conectar con OneDrive</button></div>`;
 else if(!tk)h+=`<p class="small">Dirección de redirección que debes registrar en Azure: <b>${esc(odRed())}</b></p><div class="row"><input id="odc" placeholder="Identificador de aplicación (cliente)" value="${esc(odCid())}" style="flex:1" aria-label="Identificador de cliente"><button class="btn" data-c="odLogin()">Conectar</button></div>`;
 else if(!S.od.done)h+='<p class="small">Conectado. ¿Qué hay en este equipo?</p><div class="row"><button class="btn" data-c="odFirst(\'up\')">Subir lo de este equipo</button><button class="btn" data-c="odFirst(\'down\')">Traer lo de OneDrive</button></div><p class="small">«Traer» sustituye lo de este equipo (antes se guarda una instantánea). «Subir» sobrescribe en OneDrive las notas con el mismo título.</p>';
 else h+='<div class="row"><button class="btn" data-c="odSync(1)">Sincronizar ahora</button><button class="btn" data-c="odOut()">Desconectar</button></div>';
-if(tk&&odOk())h+=`<p class="small">Esta novela se guarda en la carpeta «${esc(NV().fold)}» de tu OneDrive.</p><div class="row"><button class="btn" data-c="nvOpen()">Mis novelas (abrir otras o traerlas de OneDrive)</button></div>`;e.innerHTML=h+'<div class="small" id="odm">'+esc(OD.msg)+'</div>'}
+if(tk&&odOk())h+=`<p class="small">Esta novela se guarda en la carpeta «${esc(NV().fold)}» de tu OneDrive.</p><div class="row"><button class="btn" data-c="nvOpen()">Mis novelas (abrir otras o traerlas de OneDrive)</button></div>`;if(odOk()&&odCid()&&!CID0)h+='<h4>Otros equipos</h4><p class="small">Para no tener que escribir el Id de cliente en cada equipo, descarga una copia de Marginalia que ya lo lleve incluido y súbela a GitHub como index.html. El Id no es una contraseña. En cada equipo seguirás teniendo que iniciar sesión con Microsoft una vez.</p><div class="row"><button class="btn" data-c="cidBake()">Descargar la aplicación con mi Id incluido</button></div>';
+e.innerHTML=h+'<div class="small" id="odm">'+esc(OD.msg)+'</div>'}
 let NVC=0,ODN=[];
 const NV=()=>IDX.list.find(x=>x.id===PID);
 const fo=n=>{const b=n.replace(/[\\/:*?"<>|#%]/g,'_').replace(/[. ]+$/,'').trim()||'Novela';let f=b,i=2;while(IDX.list.some(x=>x.fold.toLowerCase()===f.toLowerCase()))f=b+' ('+i+++')';return f};
@@ -362,9 +375,9 @@ const blank=()=>norm({sel:null,view:'write',prev:false,notes:[{id:uid(),type:'sc
 const nvIdx=()=>{try{localStorage.setItem('scr_idx',JSON.stringify(IDX))}catch(e){}};
 function nvFlush(){try{localStorage.setItem('scr_n_'+PID,JSON.stringify(S))}catch(e){}nvIdx()}
 function nvUi(){NVC=0;const st=x=>{try{const d=x.id===PID?S:JSON.parse(localStorage.getItem('scr_n_'+x.id)||'null');if(!d||!d.notes)return'Vacía';const sc=d.notes.filter(n=>n.type==='scene');return sc.reduce((a,n)=>a+words(n.text),0)+' palabras · '+sc.length+' escenas'}catch(e){return''}};
-$('#nvl').innerHTML=IDX.list.map(x=>`<button class="it ${x.id===PID?'on':''}" data-c="nvGo('${x.id}')"><span>${esc(x.name)}</span><span class="small">${x.id===PID?'abierta · ':''}${st(x)}</span></button>`).join('');
-$('#nvr').value=NV().name;$('#nvdb').textContent='Borrar esta novela de este equipo';
-$('#nvo').innerHTML=localStorage.getItem('mg_au')&&odOk()?'<div class="row"><button class="btn" data-c="odNovels()">Buscar otras novelas en OneDrive</button></div><div id="odl"></div>':'<div class="small">Conecta OneDrive en «Copia y sincronizar» para ver aquí las novelas guardadas en tu nube.</div>'}
+$('#nvl').innerHTML=IDX.list.map(x=>`<div class="itw ${x.id===PID?'on':''}"><button class="it ${x.id===PID?'on':''}" data-c="nvGo('${x.id}')"><span>${esc(x.name)}</span><span class="small">${x.id===PID?'abierta · ':''}${st(x)}</span></button><button class="ic" data-c="ndOpen('${x.id}')" title="Eliminar esta novela" aria-label="Eliminar novela «${esc(x.name)}»">✕</button></div>`).join('');
+$('#nvr').value=NV().name;const on=localStorage.getItem('mg_au')&&odOk();
+$('#nvo').innerHTML=!odOk()?'<div class="small">La sincronización con OneDrive funciona abriendo Marginalia desde una dirección web (por ejemplo, GitHub Pages).</div>':!on?'<div class="small">Conecta OneDrive para ver aquí las novelas guardadas en tu nube.</div><div class="row"><button class="btn" data-c="nvSync()">Conectar con OneDrive…</button></div>':(S.od&&S.od.done?'<div class="small">«'+esc(NV().name)+'» se sincroniza con OneDrive.</div>':'<div class="small">«'+esc(NV().name)+'» aún no está sincronizada con OneDrive.</div><div class="row"><button class="btn" data-c="nvFirst(\'up\')">Subir lo de este equipo</button><button class="btn" data-c="nvFirst(\'down\')">Traer lo de OneDrive</button></div>')+'<div class="small" style="margin-top:10px">Otras novelas en OneDrive (que no están en este equipo):</div><div id="odl"></div><div class="row"><button class="btn" data-c="odNovels()">Actualizar la lista</button></div>';if(on)odNovels()}
 function nvOpen(f){const d=$('#dlg');if(d&&d.open)d.close();nvUi();$('#nvd').showModal();if(f)$('#nvn').focus()}
 function nvGo(id){if(OD.busy){alert('Espera a que termine la sincronización con OneDrive.');return}if(id===PID){$('#nvd').close();return}nvFlush();clearTimeout(OD.tm);PID=id;IDX.cur=id;nvIdx();S=load();typo();AIR='';render();odUi();$('#nvd').close()}
 function nvNew(){if(OD.busy)return;const n=($('#nvn').value||'').trim()||'Nueva novela';nvFlush();const id='n'+uid();IDX.list.push({id,name:n,fold:fo(n)});try{localStorage.setItem('scr_n_'+id,JSON.stringify(blank()))}catch(e){}$('#nvn').value='';nvGo(id)}
@@ -372,7 +385,7 @@ function nvRen(){const v=$('#nvr').value.trim();if(!v)return;NV().name=v;nvIdx()
 function nvDel(){if(OD.busy)return;if(!NVC){NVC=1;$('#nvdb').textContent='Pulsa otra vez para borrar «'+NV().name+'» de este equipo';return}NVC=0;const id=PID;IDX.list=IDX.list.filter(x=>x.id!==id);try{localStorage.removeItem('scr_n_'+id)}catch(e){}
 let nx=IDX.list[0];if(!nx){nx={id:'n'+uid(),name:'Mi novela',fold:'Mi novela'};IDX.list.push(nx);try{localStorage.setItem('scr_n_'+nx.id,JSON.stringify(blank()))}catch(e){}}
 PID=nx.id;IDX.cur=PID;nvIdx();S=load();typo();render();nvUi();odUi()}
-async function odNovels(){const e=$('#odl');e.textContent='Buscando…';try{const r=await gx('/children?$top=200&$select=name,folder'),j=r.ok?await r.json():{value:[]};ODN=j.value.filter(x=>x.folder&&!IDX.list.some(n=>n.fold.toLowerCase()===x.name.toLowerCase())).map(x=>x.name);e.innerHTML=ODN.length?ODN.map((n,i)=>`<div class="row"><span class="small" style="flex:1">${esc(n)}</span><button class="chip" data-c="odOpenFolder(${i})">Traer a este equipo</button></div>`).join(''):'<div class="small">No hay más novelas en OneDrive.</div>'}catch(x){odMsg('Error: '+x.message)}}
+async function odNovels(){const e=$('#odl');if(!e)return;e.textContent='Buscando…';try{const r=await gx('/children?$top=200&$select=name,folder'),j=r.ok?await r.json():{value:[]};ODN=j.value.filter(x=>x.folder&&!IDX.list.some(n=>n.fold.toLowerCase()===x.name.toLowerCase())).map(x=>x.name);e.innerHTML=ODN.length?ODN.map((n,i)=>`<div class="row"><span style="flex:1;min-width:0;overflow-wrap:anywhere">${esc(n)}</span><button class="chip" data-c="odOpenFolder(${i})">Traer a este equipo</button><button class="ic" data-c="ndOpenOd(${i})" title="Eliminar de OneDrive" aria-label="Eliminar «${esc(n)}» de OneDrive">✕</button></div>`).join(''):'<div class="small">No hay más novelas en OneDrive.</div>'}catch(x){odMsg('Error: '+x.message)}}
 async function odOpenFolder(i){const f=ODN[i];if(!f||OD.busy)return;nvFlush();const id='n'+uid();IDX.list.push({id,name:f,fold:f});try{localStorage.setItem('scr_n_'+id,JSON.stringify(blank()))}catch(e){}PID=id;IDX.cur=id;nvIdx();S=load();render();$('#nvd').close();await odFirst('down');odUi()}
 function book(st){const sc=S.notes.filter(n=>n.type==='scene'),chs=[...new Set(sc.map(n=>n.chapter))],tot=sc.reduce((a,n)=>a+words(n.text),0),goal=sc.reduce((a,n)=>a+(n.goal||0),0);
 const txt=chs.map(ch=>'## '+ch+'\n\n'+sc.filter(n=>n.chapter===ch).map(n=>n.text.replace(/\{\{.+?\}\}/g,'').replace(LINK,(m,x)=>{const p=x.split('|');return p[1]||p[0]})).join('\n\n* * *\n\n')).join('\n\n');
@@ -490,20 +503,46 @@ function chAdd(i){const ch=chs()[i];if(ch===undefined)return;const n=mk('scene',
 function chDel(){const ch=chs()[CHI];if(ch===undefined)return;const sc=S.notes.filter(n=>n.type==='scene'&&n.chapter===ch),rest2=S.notes.filter(n=>!sc.includes(n));
 if(!rest2.length){$('#chm').textContent='No se puede eliminar: la novela se quedaría sin ninguna nota.';return}
 S.trash.push(...sc);S.notes=rest2;if(!S.notes.some(n=>n.id===S.sel))S.sel=S.notes[0].id;$('#chd').close();render();save()}
+let NTI=null,NTT='';
+function ntOpen(id,del){const n=S.notes.find(x=>x.id===id);if(!n)return;NTI=id;NTT='';
+$('#ntt').textContent=del?'Eliminar «'+n.title+'»':'Renombrar «'+n.title+'»';$('#ntn').value=n.title;$('#ntm').textContent='';$('#nts').hidden=false;$('#ntdw').hidden=false;
+$('#ntdi').textContent='Irá a la papelera (podrás restaurarla desde la lista de la izquierda).';$('#ntd').classList.toggle('warn',!!del);$('#ntd').showModal();(del?$('#ntdel'):$('#ntn')).focus()}
+function ntNew(t){NTI=null;NTT=t;$('#ntt').textContent='Nuevo '+TY[t].toLowerCase();$('#ntn').value='';$('#ntm').textContent='';$('#nts').hidden=true;$('#ntdw').hidden=true;$('#ntd').classList.remove('warn');$('#ntd').showModal();$('#ntn').focus()}
+function ntSave(){const v=$('#ntn').value.trim(),m=$('#ntm');if(!v){m.textContent='Escribe un nombre.';return}
+if(NTI===null){if(find(v)){m.textContent='Ya existe una nota con ese nombre.';return}const n=mk(NTT,v);$('#ntd').close();go(n.id);return}
+const n=S.notes.find(x=>x.id===NTI);if(!n){$('#ntd').close();return}if(v===n.title){$('#ntd').close();return}const x=find(v);if(x&&x!==n){m.textContent='Ya existe otra nota con ese nombre.';return}
+const o=n.title,re=new RegExp('\\[\\[\\s*'+reEsc(o)+'\\s*(\\|[^\\]]*)?\\]\\]','gi');S.notes.forEach(q=>q.text=q.text.replace(re,(z,a)=>'[['+v+(a||'')+']]'));n.title=v;$('#ntd').close();render();save()}
+function ntDel(){const n=S.notes.find(x=>x.id===NTI);if(!n)return;if(S.notes.length<2){$('#ntm').textContent='No se puede eliminar la única nota de la novela.';return}
+S.trash.push(n);S.notes=S.notes.filter(x=>x!==n);if(!S.notes.some(x=>x.id===S.sel))S.sel=S.notes[0].id;$('#ntd').close();render();save()}
+let ND=null;
+function nvRemove(id){IDX.list=IDX.list.filter(x=>x.id!==id);try{localStorage.removeItem('scr_n_'+id)}catch(e){}
+if(id===PID){let nx=IDX.list[0];if(!nx){nx={id:'n'+uid(),name:'Mi novela',fold:fo('Mi novela')};IDX.list.push(nx);try{localStorage.setItem('scr_n_'+nx.id,JSON.stringify(blank()))}catch(e){}}PID=nx.id;IDX.cur=PID;nvIdx();S=load();typo();AIR='';render();odUi()}else nvIdx();nvUi()}
+function ndOpen(id){const x=IDX.list.find(q=>q.id===id);if(!x)return;ND={id,fold:x.fold,od:0};const on=localStorage.getItem('mg_au')&&odOk();
+$('#ndt').textContent='Eliminar la novela «'+x.name+'»';$('#ndi').textContent='«Quitar de este equipo» la borra solo de este navegador: si estaba en OneDrive, su copia sigue allí y podrás traerla de nuevo desde «Mis novelas».'+(on?' «Eliminar también de OneDrive» borra además la carpeta «'+x.fold+'» de tu nube.':'');
+$('#ndl').hidden=false;$('#ndo').hidden=!on;$('#ndo').textContent='Eliminar también de OneDrive';$('#ndm').textContent='';$('#ndd').showModal()}
+function ndOpenOd(i){const f=ODN[i];if(f===undefined)return;ND={id:null,fold:f,od:1};$('#ndt').textContent='Eliminar «'+f+'» de OneDrive';$('#ndi').textContent='Se borrará la carpeta «'+f+'» de tu OneDrive con todas sus notas. Esta aplicación no puede recuperarla después (OneDrive suele conservarla un tiempo en su papelera).';$('#ndl').hidden=true;$('#ndo').hidden=false;$('#ndo').textContent='Eliminar de OneDrive';$('#ndm').textContent='';$('#ndd').showModal()}
+async function ndGo(a){if(!ND||OD.busy)return;const m=$('#ndm'),s=ND;
+if(a==='both'||s.od){m.textContent='Eliminando de OneDrive…';try{await gx(':/'+encodeURIComponent(s.fold)+':',{method:'DELETE'})}catch(e){m.textContent='No se pudo eliminar de OneDrive: '+e.message;return}}
+ND=null;$('#ndd').close();if(s.id)nvRemove(s.id);else if($('#nvd').open)odNovels()}
+function nvSync(){$('#nvd').close();$('#sync').click()}
+function nvFirst(m){$('#nvd').close();odFirst(m)}
+async function cidBake(){const cid=odCid();if(!/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(cid)){odMsg('El Id de cliente debe tener el formato xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx.');return}
+try{const r=await fetch(location.origin+location.pathname,{cache:'no-store'});if(!r.ok)throw new Error('respuesta '+r.status);const src=await r.text(),re=new RegExp('const CID0=\\/\\*CID\\*\\/\'[^\']*\';');if(!re.test(src))throw new Error('no encuentro dónde poner el Id en este archivo');
+dl('index.html',new Blob([src.replace(re,'const CID0=/*'+'CID*/\''+cid+'\';')],{type:'text/html'}));odMsg('Descargado «index.html» con tu Id incluido. Súbelo a GitHub en lugar del actual.')}catch(e){odMsg('No se pudo preparar el archivo: '+e.message)}}
 function copy(t){try{navigator.clipboard.writeText(t)}catch(e){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(_){}a.remove()}}
 function render(){document.body.classList.toggle('focus',!!S.focus);$('#nvb').textContent=NV().name+' ▾';$('#mn').dataset.p=S.pane;document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.v===S.view));document.querySelectorAll('#mnav button').forEach(b=>b.classList.toggle('on',b.dataset.p===S.pane));side();right();stage()}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{S.view=b.dataset.v;S.pane='stage';render()});
 document.querySelectorAll('#mnav button').forEach(b=>b.onclick=()=>{S.pane=b.dataset.p;render()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.focus)foco()});
 $('#th').onclick=()=>{const r=document.documentElement,d=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme: dark)').matches);S.theme=d?'light':'dark';r.dataset.theme=S.theme;try{localStorage.setItem('scr_th',S.theme)}catch(e){}save()};
-$('#sync').onclick=()=>{$('#dt').value=JSON.stringify(S);odUi();$('#dlg').showModal()};$('#dx').onclick=()=>$('#dlg').close();$('#nvx').onclick=()=>$('#nvd').close();$('#exx').onclick=()=>$('#exd').close();$('#chx').onclick=()=>$('#chd').close();$('#chn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();chSave()}};$('#dc').onclick=()=>{$('#dt').select();copy($('#dt').value);S.bk=Date.now();save()};
+$('#sync').onclick=()=>{$('#dt').value=JSON.stringify(S);odUi();$('#dlg').showModal()};$('#dx').onclick=()=>$('#dlg').close();$('#nvx').onclick=()=>$('#nvd').close();$('#exx').onclick=()=>$('#exd').close();$('#chx').onclick=()=>$('#chd').close();$('#ntx').onclick=()=>$('#ntd').close();$('#ndx').onclick=()=>{ND=null;$('#ndd').close()};$('#ntn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();ntSave()}};$('#chn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();chSave()}};$('#dc').onclick=()=>{$('#dt').select();copy($('#dt').value);S.bk=Date.now();save()};
 $('#di').onclick=()=>{try{const d=JSON.parse($('#dt').value);if(!Array.isArray(d.notes))throw 0;S=norm(d);render();save();$('#dlg').close()}catch(e){$('#dt').value='No se pudo importar: pega aquí una copia generada por Marginalia.'}};
-const FN={chOpen,chSave,chAdd,chDel,exOpen,guardar,expo,descJson,aiKeyDel,nvOpen,nvGo,nvNew,nvRen,nvDel,odNovels,odOpenFolder,odLogin,odFirst,odSync,odOut,gopen,aiGo,aiCopy,aiIns,aiNew,gz,gr,gf,go,wrap,addN,mv,del,addC,tpl,stag,rest,empt,repl,pick,foco,pal,palG,spr,rv,snapAll,snapR,leer,openT};
+const FN={ntOpen,ntNew,ntSave,ntDel,ndOpen,ndOpenOd,ndGo,nvSync,nvFirst,cidBake,chOpen,chSave,chAdd,chDel,exOpen,guardar,expo,descJson,aiKeyDel,nvOpen,nvGo,nvNew,nvRen,nvDel,odNovels,odOpenFolder,odLogin,odFirst,odSync,odOut,gopen,aiGo,aiCopy,aiIns,aiNew,gz,gr,gf,go,wrap,addN,mv,del,addC,tpl,stag,rest,empt,repl,pick,foco,pal,palG,spr,rv,snapAll,snapR,leer,openT};
 function run(s){const m=/^(\w+)\((.*)\)$/s.exec(s.trim());if(!m||!FN[m[1]])return;const a=[...m[2].matchAll(/'((?:[^'\\]|\\.)*)'|"((?:[^"\\]|\\.)*)"|(-?\d+)/g)].map(x=>x[1]!==undefined?x[1]:x[2]!==undefined?x[2]:+x[3]);FN[m[1]](...a)}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-c]');if(t)run(t.dataset.c)});
 document.addEventListener('mousedown',e=>{const t=e.target.closest('[data-pick]');if(t){e.preventDefault();pick(+t.dataset.pick)}});
-const DG={k:'sc',el:null,id:'',x:0,y:0,lx:0,ly:0,ox:0,oy:0,on:0,touch:0,tm:0,iv:0,g:null,hit:null,sup:0};
-const isSc=id=>{const n=S.notes.find(m=>m.id===id);return !!n&&n.type==='scene'};
+const DG={ty:'',k:'sc',el:null,id:'',x:0,y:0,lx:0,ly:0,ox:0,oy:0,on:0,touch:0,tm:0,iv:0,g:null,hit:null,sup:0};
+const tyOf=id=>{const n=S.notes.find(m=>m.id===id);return n?n.type:''};
 const dgClr=()=>document.querySelectorAll('.dropb,.dropa,.dropL,.dropR,.over').forEach(e=>e.classList.remove('dropb','dropa','dropL','dropR','over'));
 function dgOff(){clearTimeout(DG.tm);clearInterval(DG.iv);if(DG.g)DG.g.remove();DG.g=null;if(DG.el)DG.el.classList.remove('drg');document.body.classList.remove('dgb');dgClr();DG.el=null;DG.on=0;DG.hit=null}
 function dgMove(x,y){if(!DG.g)return;DG.g.style.left=(x-DG.ox)+'px';DG.g.style.top=(y-DG.oy)+'px';dgClr();DG.hit=null;
@@ -511,14 +550,15 @@ const br=$('.brd');if(br){const r=br.getBoundingClientRect();if(x>r.left&&x<r.ri
 const el=document.elementFromPoint(x,y);
 if(DG.k==='ch'){const q=el&&el.closest('[data-dropch]');if(q&&q.dataset.dropch!==DG.id){const r=q.getBoundingClientRect(),hz=q.classList.contains('col'),a=hz?x>r.left+r.width/2:y>r.top+r.height/2;q.classList.add(hz?(a?'dropR':'dropL'):(a?'dropa':'dropb'));DG.hit={ci:+q.dataset.dropch,a}}return}
 const c=el&&el.closest('[data-drop]');
-if(c&&c.dataset.drop!==DG.id&&isSc(c.dataset.drop)){const r=c.getBoundingClientRect(),a=y>r.top+r.height/2;c.classList.add(a?'dropa':'dropb');DG.hit={id:c.dataset.drop,a}}
-else{const k=el&&el.closest('[data-dropch]');if(k){k.classList.add('over');DG.hit={ch:+k.dataset.dropch}}}}
-function dgOn(x,y){if(!DG.el||(DG.k==='sc'&&!isSc(DG.id))){dgOff();return}const r=DG.el.getBoundingClientRect(),g=DG.el.cloneNode(true);['data-c','data-drag','data-dragch','data-drop'].forEach(a=>g.removeAttribute(a));g.classList.add('ghost');g.style.width=r.width+'px';DG.ox=x-r.left;DG.oy=y-r.top;document.body.appendChild(g);DG.g=g;DG.el.classList.add('drg');document.body.classList.add('dgb');DG.on=1;dgMove(x,y);DG.iv=setInterval(()=>dgMove(DG.lx,DG.ly),70)}
+if(c&&c.dataset.drop!==DG.id&&tyOf(c.dataset.drop)===DG.ty){const r=c.getBoundingClientRect(),a=y>r.top+r.height/2;c.classList.add(a?'dropa':'dropb');DG.hit={id:c.dataset.drop,a}}
+else if(DG.ty==='scene'){const k=el&&el.closest('[data-dropch]');if(k){k.classList.add('over');DG.hit={ch:+k.dataset.dropch}}}
+else{const k=el&&el.closest('[data-dropsec]');if(k&&k.dataset.dropsec===DG.ty){k.classList.add('over');DG.hit={sec:DG.ty}}}}
+function dgOn(x,y){DG.ty=DG.k==='sc'?tyOf(DG.id):'';if(!DG.el||(DG.k==='sc'&&!DG.ty)){dgOff();return}const r=DG.el.getBoundingClientRect(),g=DG.el.cloneNode(true);['data-c','data-drag','data-dragch','data-drop'].forEach(a=>g.removeAttribute(a));g.classList.add('ghost');g.style.width=r.width+'px';DG.ox=x-r.left;DG.oy=y-r.top;document.body.appendChild(g);DG.g=g;DG.el.classList.add('drg');document.body.classList.add('dgb');DG.on=1;dgMove(x,y);DG.iv=setInterval(()=>dgMove(DG.lx,DG.ly),70)}
 document.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;const t=e.target.closest('[data-dragch],[data-drag]');if(!t||e.target.closest('input,textarea,select,.ic'))return;dgOff();DG.k=t.dataset.dragch!==undefined?'ch':'sc';DG.el=t;DG.id=DG.k==='ch'?t.dataset.dragch:t.dataset.drag;DG.x=DG.lx=e.clientX;DG.y=DG.ly=e.clientY;DG.touch=e.pointerType!=='mouse';if(DG.touch)DG.tm=setTimeout(()=>{if(DG.el&&!DG.on)dgOn(DG.x,DG.y)},400)});
 document.addEventListener('pointermove',e=>{if(!DG.el)return;DG.lx=e.clientX;DG.ly=e.clientY;
 if(!DG.on){if(Math.hypot(e.clientX-DG.x,e.clientY-DG.y)>(DG.touch?10:5)){if(DG.touch)dgOff();else dgOn(e.clientX,e.clientY)}return}
 if(e.pointerType==='mouse'&&!e.buttons){dgOff();return}dgMove(e.clientX,e.clientY)});
-document.addEventListener('pointerup',()=>{if(!DG.el)return;const on=DG.on,h=DG.hit,id=DG.id,k=DG.k;dgOff();if(on){DG.sup=1;setTimeout(()=>{DG.sup=0},120);if(h){if(k==='ch')chMove(+id,h.ci,h.a);else if(h.ch!==undefined)dropCh(id,h.ch);else mvTo(id,h.id,h.a)}}});
+document.addEventListener('pointerup',()=>{if(!DG.el)return;const on=DG.on,h=DG.hit,id=DG.id,k=DG.k;dgOff();if(on){DG.sup=1;setTimeout(()=>{DG.sup=0},120);if(h){if(k==='ch')chMove(+id,h.ci,h.a);else if(h.sec)dropSec(id,h.sec);else if(h.ch!==undefined)dropCh(id,h.ch);else mvTo(id,h.id,h.a)}}});
 document.addEventListener('pointercancel',dgOff);
 document.addEventListener('click',e=>{if(DG.sup){e.preventDefault();e.stopPropagation()}},true);
 document.addEventListener('touchmove',e=>{if(DG.on)e.preventDefault()},{passive:false});
@@ -527,7 +567,7 @@ document.addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest(
 document.addEventListener('change',e=>{const k=e.target.dataset.ch;if(!k)return;const v=e.target.type==='checkbox'?e.target.checked:e.target.value;
 if(k==='bt'){S.bt=v;board($('#stage'))}else if(k==='gt'){S.gt=v;stage()}else if(k==='gl'){S.gl=v;stage()}else if(k==='dg'){S.dg=+v||0;right();save()}else if(k==='ff'){S.ff=v;typo();save()}else if(k==='fs'){S.fs=+v||17;typo();save()}else if(k==='fw'){S.fw=+v||720;typo();save()}else if(k==='au'){S.au=String(v).trim();save()}else if(k==='ak'){aKeySet(v)}else if(k==='am'){aModelSet(v)}});
 render();
-odBack().then(()=>{if(S.od.done&&localStorage.getItem('mg_au'))odSync();else if(localStorage.getItem('mg_au')&&OD.msg)$('#sync').click()});
+odBack().then(()=>{if(S.od.done&&localStorage.getItem('mg_au'))odSync();else if(localStorage.getItem('mg_au')&&OD.msg){if(/^Conectado/.test(OD.msg))nvOpen();else $('#sync').click()}});
 setInterval(()=>{if(!document.hidden&&S.od.done&&localStorage.getItem('mg_au'))odSync()},60000);
 })();
 </script></body></html>
